@@ -1,0 +1,32 @@
+[phases.setup]
+nixPkgs = [
+  'php82',
+  'php82Packages.composer',
+  'php82Extensions.pdo',
+  'php82Extensions.pdo_sqlite',
+  'php82Extensions.pdo_mysql',
+  'php82Extensions.mbstring',
+  'php82Extensions.fileinfo',
+  'php82Extensions.curl',
+  'php82Extensions.openssl',
+  'php82Extensions.gd',
+  'php82Extensions.zip',
+  'sqlite'
+]
+
+[phases.install]
+cmds = [
+  'cd backend-poltar && composer install --no-dev --optimize-autoloader --no-interaction'
+]
+
+[phases.build]
+cmds = [
+  'mkdir -p backend-poltar/public/assets',
+  'cp index.html admin.html login.html backend-poltar/public/',
+  'cp -r assets/* backend-poltar/public/assets/',
+  'cd backend-poltar && touch database/database.sqlite && chmod -R 777 database storage bootstrap/cache',
+  'cd backend-poltar && php artisan storage:link || true'
+]
+
+[start]
+cmd = 'cd backend-poltar && php artisan migrate --force && php artisan db:seed --force || true; php artisan serve --host=0.0.0.0 --port=${PORT:-8000}'

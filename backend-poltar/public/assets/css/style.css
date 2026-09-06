@@ -1,0 +1,555 @@
+/* ============================================================
+   POLISI TARUNA SMKN 2 DEPOK — MODERN DESIGN SYSTEM
+   Clean, Creative, Professional, Subtle Glassmorphism
+   ============================================================ */
+
+:root {
+    /* Color Palette */
+    --bg-dark: #090d16;
+    --bg-surface: #0f172a;
+    --bg-card: rgba(18, 26, 43, 0.75);
+    --bg-card-hover: rgba(28, 38, 62, 0.85);
+    --bg-card-solid: #131b2e;
+
+    /* Accents */
+    --accent-red: #e11d48;
+    --accent-red-hover: #f43f5e;
+    --accent-red-glow: rgba(225, 29, 72, 0.25);
+    --accent-red-subtle: rgba(225, 29, 72, 0.12);
+
+    --accent-gold: #f59e0b;
+    --accent-gold-hover: #fbbf24;
+    --accent-gold-subtle: rgba(245, 158, 11, 0.12);
+
+    /* Text */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    /* Borders */
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.18);
+    --border-red: rgba(225, 29, 72, 0.35);
+    --border-gold: rgba(245, 158, 11, 0.3);
+
+    /* Radii */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-red);
+}
+
+/* Ambient Animated & Mesh Gradient Background */
+.ambient-bg {
+    background-color: var(--bg-dark);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(225, 29, 72, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 30%, rgba(245, 158, 11, 0.07) 0px, transparent 45%),
+        radial-gradient(at 50% 80%, rgba(225, 29, 72, 0.08) 0px, transparent 50%),
+        radial-gradient(at 10% 90%, rgba(30, 41, 59, 0.5) 0px, transparent 50%);
+    background-attachment: fixed;
+}
+
+/* Glassmorphism Cards */
+.glass-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+    border-color: var(--border-hover);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.glass-card-interactive {
+    cursor: pointer;
+}
+
+.glass-card-interactive:hover {
+    border-color: rgba(225, 29, 72, 0.4);
+    box-shadow: 0 14px 32px -8px var(--accent-red-glow);
+}
+
+/* Badges */
+.badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    background: var(--accent-red-subtle);
+    color: #fda4af;
+    border: 1px solid var(--border-red);
+}
+
+.badge-pill-gold {
+    background: var(--accent-gold-subtle);
+    color: #fde68a;
+    border: 1px solid var(--border-gold);
+}
+
+.badge-pill-neutral {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 0.65rem 1.25rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px var(--accent-red-glow);
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px var(--accent-red-glow);
+    color: #ffffff;
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: 0.65rem 1.25rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* Navigation Link */
+.nav-link {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    position: relative;
+}
+
+.nav-link:hover,
+.nav-link.nav-active {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link.nav-active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    background: var(--accent-red);
+    border-radius: 2px;
+}
+
+/* ============================================================
+   SIDEBAR / OFF-CANVAS MENU (mirip web SMKN 2)
+   ============================================================ */
+
+/* Link di dalam sidebar: full-width, ikon + label, tanpa underline */
+#sidebarMenu .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border-left: 3px solid transparent;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.01em;
+}
+
+/* Kunci ukuran ikon SVG di sidebar — tidak peduli class Tailwind */
+#sidebarMenu .nav-link svg {
+    width: 1rem;      /* 16px */
+    height: 1rem;     /* 16px */
+    min-width: 1rem;
+    min-height: 1rem;
+    flex-shrink: 0;
+}
+
+#sidebarMenu .nav-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+}
+
+#sidebarMenu .nav-link.nav-active {
+    background: var(--accent-red-subtle);
+    color: #ffffff;
+    border-left-color: var(--accent-red);
+}
+
+/* Buang underline lama (::after) untuk konteks sidebar */
+#sidebarMenu .nav-link.nav-active::after {
+    content: none;
+}
+
+/* Overlay gelap di belakang sidebar */
+#sidebarOverlay.opacity-100 {
+    opacity: 1;
+}
+
+/* Kunci scroll body saat sidebar terbuka */
+body.overflow-hidden {
+    overflow: hidden;
+}
+
+/* Scrollbar tipis khusus di dalam sidebar */
+#sidebarMenu nav::-webkit-scrollbar {
+    width: 5px;
+}
+
+#sidebarMenu nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+}
+
+/* Generation Tabs */
+.tab-btn {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.825rem;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.tab-btn:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.tab-btn.is-active {
+    background: linear-gradient(135deg, #e11d48, #be123c);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px var(--accent-red-glow);
+}
+
+/* Form Inputs */
+.form-control {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent-red);
+    box-shadow: 0 0 0 3px var(--accent-red-glow);
+    background: rgba(15, 23, 42, 0.95);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+/* Photo Frames & Image Viewer */
+.img-showcase {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.img-showcase:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.8);
+    transform: translateY(-3px);
+}
+
+/* Glowing Border Helper */
+.glow-border {
+    position: relative;
+}
+
+.glow-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(225, 29, 72, 0.5), transparent 60%, rgba(245, 158, 11, 0.3));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+}
+
+/* Personel Card Styling */
+.person-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.person-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-red), var(--accent-gold));
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.person-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.6);
+}
+
+.person-card:hover::after {
+    opacity: 1;
+}
+
+/* ============================================================
+   CREATIVE TASK & PROGRAM CARDS
+   Interactive, animated, stylish
+   ============================================================ */
+.task-card {
+    position: relative;
+    background: linear-gradient(145deg, rgba(18, 26, 43, 0.85) 0%, rgba(12, 18, 32, 0.95) 100%);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    padding: 1.75rem;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+    z-index: 1;
+}
+
+.task-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, var(--card-glow, rgba(225, 29, 72, 0.15)), transparent 70%);
+    opacity: 0.3;
+    transition: opacity 0.35s ease;
+    z-index: -1;
+}
+
+.task-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 0%;
+    background: linear-gradient(180deg, var(--accent-red), var(--accent-gold));
+    transition: height 0.35s ease;
+}
+
+.task-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 25px -5px var(--card-glow, rgba(225, 29, 72, 0.2));
+}
+
+.task-card:hover::before {
+    opacity: 1;
+}
+
+.task-card:hover::after {
+    height: 100%;
+}
+
+.task-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.task-card:hover .task-icon-box {
+    transform: scale(1.1) rotate(3deg);
+}
+
+.task-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-full);
+}
+
+.live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: livePulse 2s infinite ease-in-out;
+}
+
+@keyframes livePulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.6);
+        opacity: 1;
+        box-shadow: 0 0 10px currentColor;
+    }
+}
+
+.floating-accent {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(50px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.2;
+    animation: floatOrb 8s infinite alternate ease-in-out;
+}
+
+@keyframes floatOrb {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(20px, -20px) scale(1.15); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .btn-primary, .btn-secondary {
+        padding: 0.6rem 1rem;
+        font-size: 0.825rem;
+    }
+}
+
+/* ============================================================
+   RESPONSIVE SAFETY NET — Windows / iPad / Mobile / Layar Kecil
+   ============================================================ */
+
+/* Cegah scroll horizontal tak terduga di semua ukuran layar */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Hormati notch/safe-area di perangkat mobile modern */
+#navbar {
+    padding-top: env(safe-area-inset-top, 0);
+}
+
+#sidebarMenu {
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Layar sangat kecil (<=360px): rapatkan sedikit spacing navbar */
+@media (max-width: 360px) {
+    #navbar .container {
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
+    }
+}
+
+/* Tablet (iPad, 641px - 1024px): pastikan konten tetap nyaman dibaca */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .container {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}

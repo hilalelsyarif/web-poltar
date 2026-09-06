@@ -156,9 +156,8 @@ class AuthController extends Controller
                 'role'      => 'user'
             ]);
 
-            $token = $user->createToken('auth_token')->plainTextToken;
-
-            return redirect("http://127.0.0.1:5500/index.html?token={$token}&role={$user->role}&name=" . urlencode($user->name));
+            $frontendUrl = env('FRONTEND_URL', 'http://127.0.0.1:5500');
+            return redirect("{$frontendUrl}/index.html?token={$token}&role={$user->role}&name=" . urlencode($user->name));
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false, 
