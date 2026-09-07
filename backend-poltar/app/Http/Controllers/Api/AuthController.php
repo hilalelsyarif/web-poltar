@@ -136,13 +136,17 @@ class AuthController extends Controller
     }
 
     // 5. REDIRECT GOOGLE
-    public function redirectToGoogle()
+    public function redirectToGoogle(Request $request)
     {
-        return Socialite::driver('google')->stateless()->redirect();
+        $driver = Socialite::driver('google')->stateless();
+        if ($request->has('redirect_to')) {
+            $driver->with(['state' => base64_encode($request->get('redirect_to'))]);
+        }
+        return $driver->redirect();
     }
 
     // 6. CALLBACK GOOGLE
-    public function handleGoogleCallback()
+    public function handleGoogleCallback(Request $request)
     {
         try {
             $googleUser = Socialite::driver('google')->stateless()->user();
@@ -156,7 +160,29 @@ class AuthController extends Controller
                 'role'      => 'user'
             ]);
 
-            $frontendUrl = env('FRONTEND_URL', 'http://127.0.0.1:5500');
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            // Prioritas URL pengalihan kembali ke frontend:
+            // 1. Parameter 'state' dari query (misalnya frontend berjalan di Vercel atau domain tertentu)
+            // 2. Variabel environment FRONTEND_URL
+            // 3. Fallback: domain backend saat ini (url('/')) atau http://127.0.0.1:5500 jika local
+            $frontendUrl = null;
+            if ($request->has('state')) {
+                $decoded = base64_decode($request->get('state'), true);
+                if ($decoded && filter_var($decoded, FILTER_VALIDATE_URL)) {
+                    $frontendUrl = rtrim($decoded, '/');
+                }
+            }
+
+            if (!$frontendUrl) {
+                $frontendUrl = env('FRONTEND_URL');
+            }
+
+            if (!$frontendUrl) {
+                $frontendUrl = app()->environment('local') ? 'http://127.0.0.1:5500' : url('/');
+            }
+
+            $frontendUrl = rtrim($frontendUrl, '/');
             return redirect("{$frontendUrl}/index.html?token={$token}&role={$user->role}&name=" . urlencode($user->name));
         } catch (\Exception $e) {
             return response()->json([

@@ -107,7 +107,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             const googleLink = document.getElementById('btnGoogleLogin');
             if (googleLink) {
-                googleLink.href = `${API_BASE}/auth/google`;
+                const currentOrigin = encodeURIComponent(window.location.origin);
+                googleLink.href = `${API_BASE}/auth/google?redirect_to=${currentOrigin}`;
             }
         });
 
