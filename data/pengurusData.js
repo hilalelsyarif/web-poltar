@@ -228,4 +228,31 @@ export const pengurusData = {
 
 export const generations = ["18", "19", "20", "21", "22"];
 
+export function getDefaultPengurusFlatList() {
+  const list = [];
+  generations.forEach((gen) => {
+    const d = pengurusData[gen];
+    if (!d) return;
+    const combined = [
+      ...(d.pimpinan || []),
+      ...(d.pkt || []),
+      ...(d.sekretarisBendahara || []),
+      ...(d.divisiOperasional || []),
+      ...(d.anggota || []),
+    ];
+    combined.forEach((item, index) => {
+      list.push({
+        id: item.id || `default-${gen}-${index}`,
+        name: item.name || "Nama Personel",
+        position: item.position || "",
+        generation: parseInt(gen, 10),
+        image_path: "",
+        image_url: item.image || "/images/placeholder.jpg",
+        is_default: true,
+      });
+    });
+  });
+  return list;
+}
+
 export default pengurusData;

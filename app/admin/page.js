@@ -4,14 +4,15 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getBackendBase } from "@/lib/config";
+import { getDefaultPengurusFlatList } from "@/data/pengurusData";
 
 export default function AdminPage() {
   const router = useRouter();
   const [token, setToken] = useState(null);
   const [reports, setReports] = useState([]);
-  const [structures, setStructures] = useState([]);
+  const [structures, setStructures] = useState(() => getDefaultPengurusFlatList());
   const [loadingReports, setLoadingReports] = useState(true);
-  const [loadingStructures, setLoadingStructures] = useState(true);
+  const [loadingStructures, setLoadingStructures] = useState(false);
 
   // Form add structure
   const [structName, setStructName] = useState("");
@@ -84,13 +85,14 @@ export default function AdminPage() {
         headers: { Accept: "application/json" },
       });
       const result = await res.json();
-      if (res.ok && result.success && Array.isArray(result.data)) {
+      if (res.ok && result.success && Array.isArray(result.data) && result.data.length > 0) {
         setStructures(result.data);
       } else {
-        setStructures([]);
+        setStructures((prev) => (prev && prev.length > 0 ? prev : getDefaultPengurusFlatList()));
       }
     } catch (err) {
-      setStructures([]);
+      console.warn("Could not fetch structures from backend, keeping default list:", err);
+      setStructures((prev) => (prev && prev.length > 0 ? prev : getDefaultPengurusFlatList()));
     } finally {
       setLoadingStructures(false);
     }
@@ -188,9 +190,14 @@ export default function AdminPage() {
       formData.append("image", editImage);
     }
 
+    const isNumericId = Number.isInteger(Number(editingPerson.id)) && !isNaN(Number(editingPerson.id));
+    const url = isNumericId
+      ? `${getBackendBase()}/api/structures/${editingPerson.id}`
+      : `${getBackendBase()}/api/structures`;
+
     try {
-      const res = await fetch(`${getBackendBase()}/api/structures/${editingPerson.id}`, {
-        method: "POST", // POST endpoint supports multipart file updates in backend
+      const res = await fetch(url, {
+        method: "POST", // POST endpoint supports multipart file updates or creating new personnel
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
@@ -215,6 +222,13 @@ export default function AdminPage() {
 
   const deleteStructure = async (id) => {
     if (!window.confirm("Apakah Anda yakin ingin menghapus data personel ini?")) return;
+
+    const isNumericId = Number.isInteger(Number(id)) && !isNaN(Number(id));
+    if (!isNumericId) {
+      setStructures((prev) => prev.filter((item) => item.id !== id));
+      alert("Data personel berhasil dihapus.");
+      return;
+    }
 
     try {
       const res = await fetch(`${getBackendBase()}/api/structures/${id}`, {
@@ -550,8 +564,8 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Filter Angkatan Tabs */}
-            <div className="flex flex-wrap items-center gap-1.5 text-xs">
+            {/* Filter Angkatan Tabs & Sync Button */}
+            <div className="flex flex-wrap items-center gap-1.5 text-xs w-full sm:w-auto">
               <span className="text-[11px] text-slate-400 mr-1">Filter Angkatan:</span>
               {["all", "18", "19", "20", "21", "22"].map((gen) => (
                 <button
@@ -567,87 +581,101 @@ export default function AdminPage() {
                   {gen === "all" ? "Semua" : `Akt. ${gen}`}
                 </button>
               ))}
+              <button
+                type="button"
+                onClick={loadStructures}
+                disabled={loadingStructures}
+                className="ml-auto sm:ml-2 flex items-center gap-1.5 px-3 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-slate-300 hover:text-white transition text-xs cursor-pointer disabled:opacity-50"
+                title="Sinkronkan data dari server backend"
+              >
+                <span className={loadingStructures ? "animate-spin inline-block" : ""}>🔄</span>
+                <span>{loadingStructures ? "Sinkronisasi..." : "Sinkronkan"}</span>
+              </button>
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-900/80 text-slate-400 uppercase text-[11px] border-b border-white/10 font-semibold">
-                <tr>
-                  <th className="p-3">Foto</th>
-                  <th className="p-3">Nama</th>
-                  <th className="p-3">Jabatan</th>
-                  <th className="p-3">Angkatan</th>
-                  <th className="p-3">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="adminStructureTable" className="divide-y divide-white/5 text-slate-300">
-                {loadingStructures ? (
-                  <tr>
-                    <td colSpan="5" className="p-4 text-center text-slate-500">
-                      Memuat data struktur...
-                    </td>
-                  </tr>
-                ) : structures.length > 0 ? (
-                  structures
-                    .filter(
-                      (item) =>
-                        adminGenFilter === "all" ||
-                        String(item.generation) === String(adminGenFilter)
-                    )
-                    .map((item, idx) => (
-                      <tr key={item.id || idx} className="hover:bg-white/5 transition border-b border-white/5">
-                        <td className="p-3">
-                          <img
-                            src={
-                              item.image_url ||
-                              (item.image_path
-                                ? `${getBackendBase()}/storage/${item.image_path}`
-                                : "/images/placeholder.jpg")
-                            }
-                            alt={item.name}
-                            className="w-10 h-10 object-cover rounded-full border border-white/20"
-                          />
-                        </td>
-                        <td className="p-3 font-semibold text-white">{item.name}</td>
-                        <td className="p-3 text-amber-400 font-medium">
-                          <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-xs">
-                            {item.position}
-                          </span>
-                        </td>
-                        <td className="p-3 text-slate-300 font-mono">Angkatan {item.generation}</td>
-                        <td className="p-3">
-                          <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => openEditModal(item)}
-                              className="bg-sky-950/80 hover:bg-sky-900 text-sky-200 border border-sky-700/60 px-2.5 py-1 rounded-md transition text-xs cursor-pointer inline-flex items-center gap-1"
-                              title="Edit nama, jabatan, atau ganti foto"
-                            >
-                              <span>✏️</span>
-                              <span>Edit / Foto</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => deleteStructure(item.id)}
-                              className="bg-rose-950 hover:bg-rose-900 text-rose-200 border border-rose-800/80 px-2.5 py-1 rounded-md transition text-xs cursor-pointer"
-                            >
-                              Hapus
-                            </button>
-                          </div>
+          {(() => {
+            const filteredStructures = structures.filter(
+              (item) =>
+                adminGenFilter === "all" ||
+                String(item.generation) === String(adminGenFilter)
+            );
+
+            return (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-900/80 text-slate-400 uppercase text-[11px] border-b border-white/10 font-semibold">
+                    <tr>
+                      <th className="p-3">Foto</th>
+                      <th className="p-3">Nama</th>
+                      <th className="p-3">Jabatan</th>
+                      <th className="p-3">Angkatan</th>
+                      <th className="p-3">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminStructureTable" className="divide-y divide-white/5 text-slate-300">
+                    {loadingStructures ? (
+                      <tr>
+                        <td colSpan="5" className="p-4 text-center text-slate-500">
+                          Memuat data struktur...
                         </td>
                       </tr>
-                    ))
-                ) : (
-                  <tr>
-                    <td colSpan="5" className="p-6 text-center text-slate-500">
-                      Belum ada data personel terdaftar.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                    ) : filteredStructures.length > 0 ? (
+                      filteredStructures.map((item, idx) => (
+                        <tr key={item.id || idx} className="hover:bg-white/5 transition border-b border-white/5">
+                          <td className="p-3">
+                            <img
+                              src={
+                                item.image_url ||
+                                (item.image_path
+                                  ? `${getBackendBase()}/storage/${item.image_path}`
+                                  : "/images/placeholder.jpg")
+                              }
+                              alt={item.name}
+                              className="w-10 h-10 object-cover rounded-full border border-white/20"
+                            />
+                          </td>
+                          <td className="p-3 font-semibold text-white">{item.name}</td>
+                          <td className="p-3 text-amber-400 font-medium">
+                            <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-xs">
+                              {item.position}
+                            </span>
+                          </td>
+                          <td className="p-3 text-slate-300 font-mono">Angkatan {item.generation}</td>
+                          <td className="p-3">
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => openEditModal(item)}
+                                className="bg-sky-950/80 hover:bg-sky-900 text-sky-200 border border-sky-700/60 px-2.5 py-1 rounded-md transition text-xs cursor-pointer inline-flex items-center gap-1"
+                                title="Edit nama, jabatan, atau ganti foto"
+                              >
+                                <span>✏️</span>
+                                <span>Edit / Foto</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => deleteStructure(item.id)}
+                                className="bg-rose-950 hover:bg-rose-900 text-rose-200 border border-rose-800/80 px-2.5 py-1 rounded-md transition text-xs cursor-pointer"
+                              >
+                                Hapus
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="p-6 text-center text-slate-500">
+                          Belum ada data personel untuk {adminGenFilter === "all" ? "semua angkatan" : `Angkatan ${adminGenFilter}`}.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Modal Edit Personel & Upload Foto */}
