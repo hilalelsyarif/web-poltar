@@ -11,19 +11,21 @@ nixPkgs = [
   'php82Extensions.openssl',
   'php82Extensions.gd',
   'php82Extensions.zip',
-  'sqlite'
+  'sqlite',
+  'nodejs_20'
 ]
 
 [phases.install]
 cmds = [
-  'cd backend-poltar && composer install --no-dev --optimize-autoloader --no-interaction'
+  'cd backend-poltar && composer install --no-dev --optimize-autoloader --no-interaction',
+  'npm install'
 ]
 
 [phases.build]
 cmds = [
-  'mkdir -p backend-poltar/public/assets',
-  'cp index.html admin.html login.html backend-poltar/public/',
-  'cp -r assets/* backend-poltar/public/assets/',
+  'npm run build',
+  'mkdir -p backend-poltar/public',
+  'cp -r out/* backend-poltar/public/',
   'cd backend-poltar && touch database/database.sqlite && chmod -R 777 database storage bootstrap/cache',
   'cd backend-poltar && php artisan storage:link || true'
 ]

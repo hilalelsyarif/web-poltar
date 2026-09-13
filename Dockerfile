@@ -1,3 +1,12 @@
+# Stage 1: Build Next.js frontend
+FROM node:20-alpine AS frontend-builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Stage 2: PHP 8.2 Laravel Backend
 FROM php:8.2-cli-alpine
 
 # Install system dependencies & PHP extensions
@@ -25,9 +34,8 @@ COPY backend-poltar /app/backend-poltar
 RUN cd /app/backend-poltar && \
     composer install --no-dev --optimize-autoloader --no-interaction
 
-# Copy frontend static files into Laravel public directory
-COPY index.html admin.html login.html /app/backend-poltar/public/
-COPY assets /app/backend-poltar/public/assets
+# Copy exported Next.js frontend into Laravel public directory
+COPY --from=frontend-builder /app/out/ /app/backend-poltar/public/
 
 # Copy entrypoint script
 COPY docker-entrypoint.sh /docker-entrypoint.sh
