@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { getBackendBase } from "@/lib/config";
 
 export default function Struktur() {
   const [selectedGen, setSelectedGen] = useState("18");
@@ -16,13 +17,7 @@ export default function Struktur() {
       setLoading(true);
       setError(null);
       try {
-        const backendBase =
-          typeof window !== "undefined" && window.location.hostname.includes("vercel.app")
-            ? "https://web-poltar-production.up.railway.app"
-            : typeof window !== "undefined"
-            ? window.location.origin
-            : "http://127.0.0.1:8000";
-
+        const backendBase = getBackendBase();
         const res = await fetch(`${backendBase}/api/structures/${selectedGen}`);
         if (!res.ok) throw new Error("Server response error");
         const json = await res.json();
@@ -95,7 +90,7 @@ export default function Struktur() {
                 <div className="w-24 h-24 mx-auto mb-3.5 rounded-full bg-slate-900 border-2 border-white/10 group-hover:border-rose-500/80 transition-colors flex items-center justify-center overflow-hidden shadow-lg">
                   {item.image_path ? (
                     <img
-                      src={`/storage/${item.image_path}`}
+                      src={item.image_url || `${getBackendBase()}/storage/${item.image_path}`}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />

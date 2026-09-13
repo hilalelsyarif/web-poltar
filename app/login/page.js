@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { getBackendBase } from "@/lib/config";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,14 +13,6 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [googleHref, setGoogleHref] = useState("#");
-
-  const getBackendBase = () => {
-    if (typeof window === "undefined") return "http://127.0.0.1:8000";
-    if (window.location.hostname.includes("vercel.app")) {
-      return "https://web-poltar-production.up.railway.app";
-    }
-    return window.location.origin;
-  };
 
   useEffect(() => {
     const origin = typeof window !== "undefined" ? window.location.origin : "";
