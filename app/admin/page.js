@@ -65,6 +65,13 @@ export default function AdminPage() {
           Authorization: `Bearer ${authToken}`,
         },
       });
+      if (res.status === 401) {
+        // Token expired/invalid
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("user_role");
+        router.push("/login");
+        return;
+      }
       const result = await res.json();
       if (res.ok && result.success && Array.isArray(result.data)) {
         setReports(result.data);
@@ -113,6 +120,10 @@ export default function AdminPage() {
       if (res.ok && result.success) {
         alert(`Status tiket ${ticketCode} berhasil diubah ke ${newStatus}.`);
         loadReports(token);
+      } else if (res.status === 401) {
+        alert("Sesi Anda kedaluwarsa. Silakan login kembali ke akun Admin.");
+        localStorage.removeItem("auth_token");
+        router.push("/login");
       } else {
         alert(result.message || "Gagal mengubah status laporan.");
       }
@@ -135,12 +146,12 @@ export default function AdminPage() {
     }
 
     try {
+      const headers = { Accept: "application/json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
       const res = await fetch(`${getBackendBase()}/api/structures`, {
         method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers,
         body: formData,
       });
       const result = await res.json();
@@ -196,12 +207,12 @@ export default function AdminPage() {
       : `${getBackendBase()}/api/structures`;
 
     try {
+      const headers = { Accept: "application/json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
       const res = await fetch(url, {
         method: "POST", // POST endpoint supports multipart file updates or creating new personnel
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers,
         body: formData,
       });
       const result = await res.json();
@@ -223,30 +234,38 @@ export default function AdminPage() {
   const deleteStructure = async (id) => {
     if (!window.confirm("Apakah Anda yakin ingin menghapus data personel ini?")) return;
 
+    // Optimistically remove from state immediately so UI updates instantaneously
+    setStructures((prev) => prev.filter((item) => String(item.id) !== String(id)));
+
     const isNumericId = Number.isInteger(Number(id)) && !isNaN(Number(id));
     if (!isNumericId) {
-      setStructures((prev) => prev.filter((item) => item.id !== id));
       alert("Data personel berhasil dihapus.");
       return;
     }
 
     try {
+      const headers = { Accept: "application/json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
       const res = await fetch(`${getBackendBase()}/api/structures/${id}`, {
         method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers,
       });
       const resResult = await res.json();
       if (res.ok && resResult.success) {
         alert("Data personel berhasil dihapus.");
         loadStructures();
+      } else if (res.status === 401) {
+        alert("Sesi Anda kedaluwarsa. Silakan login kembali ke akun Admin.");
+        localStorage.removeItem("auth_token");
+        router.push("/login");
       } else {
         alert(resResult.message || "Gagal menghapus data.");
+        loadStructures();
       }
     } catch (err) {
       alert("Terjadi kegagalan komunikasi dengan server backend.");
+      loadStructures();
     }
   };
 
