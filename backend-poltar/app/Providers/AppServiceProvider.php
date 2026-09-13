@@ -45,13 +45,21 @@ class AppServiceProvider extends ServiceProvider
             }
         }
 
-        // 3. Auto-migrate and seed if tables are missing or empty
+        // 3. Auto-migrate tables if missing, and cleanup old AI dummy data
         try {
             if (!Schema::hasTable('structures')) {
                 Artisan::call('migrate', ['--force' => true]);
                 Artisan::call('db:seed', ['--force' => true]);
-            } elseif (\App\Models\Structure::count() === 0) {
-                Artisan::call('db:seed', ['--force' => true]);
+            } else {
+                // Hapus data dummy lama buatan AI
+                \App\Models\Structure::whereIn('name', [
+                    'Muhammad Rifqi',
+                    'Fathur Rahman',
+                    'Aditya Pratama',
+                    'Bagas Maulana',
+                    'Dwi Cahyo',
+                    'Reza Pahlevi'
+                ])->delete();
             }
         } catch (Throwable $e) {
             // Prevent crashing if migrations cannot run in this lifecycle

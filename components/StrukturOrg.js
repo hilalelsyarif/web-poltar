@@ -48,8 +48,30 @@ export default function StrukturOrg() {
           const anggota = [];
 
           backendList.forEach((item) => {
-            const rawPos = item.position || "";
+            const rawName = (item.name || "").trim();
+            const nameLower = rawName.toLowerCase();
+            const rawPos = (item.position || "").trim();
             const posLower = rawPos.toLowerCase();
+
+            // Abaikan seluruh data dummy lama buatan AI
+            const isDummyName = [
+              "muhammad rifqi",
+              "fathur rahman",
+              "aditya pratama",
+              "bagas maulana",
+              "dwi cahyo",
+              "reza pahlevi",
+            ].includes(nameLower);
+
+            const isDummyPos =
+              posLower.includes("danton") ||
+              posLower.includes("provost") ||
+              posLower.includes("patroli") ||
+              posLower.includes("komandan batalyon");
+
+            if (isDummyName || isDummyPos) {
+              return;
+            }
 
             // Aturan ketat: Linmas hanya untuk Angkatan 18 & 19
             if (!isAkt18Or19 && posLower.includes("linmas")) {
@@ -122,13 +144,23 @@ export default function StrukturOrg() {
           // Urutan Pimpinan: Wadanpol 1 (kiri), Danpol (tengah), Wadanpol 2 (kanan)
           const pimpinanResult = [wadan1, dan, wadan2, ...pimpinanLain].filter(Boolean);
 
-          setCurrentData({
-            pimpinan: pimpinanResult.length > 0 ? pimpinanResult : localGenData.pimpinan,
-            pkt: [...pktKetua, ...pktAnggota].length > 0 ? [...pktKetua, ...pktAnggota] : localGenData.pkt,
-            sekretarisBendahara: sekBen.length > 0 ? sekBen : localGenData.sekretarisBendahara,
-            divisiOperasional: divisiOps.length > 0 ? divisiOps : (localGenData.divisiOperasional || localGenData.divisiLain),
-            anggota: isAkt18Or19 ? (anggota.length > 0 ? anggota : (localGenData.anggota || [])) : [],
-          });
+          const hasAnyValidData =
+            pimpinanResult.length > 0 ||
+            pktKetua.length > 0 ||
+            pktAnggota.length > 0 ||
+            sekBen.length > 0 ||
+            divisiOps.length > 0 ||
+            anggota.length > 0;
+
+          if (hasAnyValidData) {
+            setCurrentData({
+              pimpinan: pimpinanResult.length > 0 ? pimpinanResult : localGenData.pimpinan,
+              pkt: [...pktKetua, ...pktAnggota].length > 0 ? [...pktKetua, ...pktAnggota] : localGenData.pkt,
+              sekretarisBendahara: sekBen.length > 0 ? sekBen : localGenData.sekretarisBendahara,
+              divisiOperasional: divisiOps.length > 0 ? divisiOps : (localGenData.divisiOperasional || localGenData.divisiLain),
+              anggota: isAkt18Or19 ? (anggota.length > 0 ? anggota : (localGenData.anggota || [])) : [],
+            });
+          }
         }
       } catch (err) {
         // Fallback otomatis ke localGenData jika jaringan/server bermasalah
