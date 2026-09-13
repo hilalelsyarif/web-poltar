@@ -17,7 +17,17 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => (function () {
+        $conn = env('DB_CONNECTION', 'sqlite');
+        if ($conn === 'mysql') {
+            $host = env('DB_HOST', '127.0.0.1');
+            // If MySQL host is a domain name that fails DNS resolution, fallback to sqlite
+            if (!filter_var($host, FILTER_VALIDATE_IP) && gethostbyname($host) === $host) {
+                return 'sqlite';
+            }
+        }
+        return $conn;
+    })(),
 
     /*
     |--------------------------------------------------------------------------

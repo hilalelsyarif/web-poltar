@@ -3,6 +3,10 @@ set -e
 
 cd /app/backend-poltar
 
+# Ensure SQLite file and permissions exist
+touch database/database.sqlite || true
+chmod -R 777 database storage bootstrap/cache || true
+
 # Migrate database tables and seed default admin & structure
 php artisan migrate --force || true
 php artisan db:seed --force || true
