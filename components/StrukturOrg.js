@@ -6,13 +6,21 @@ import { pengurusData, generations } from "@/data/pengurusData";
 import { getBackendBase } from "@/lib/config";
 
 export default function StrukturOrg() {
+  const [isMounted, setIsMounted] = useState(false);
   const [selectedGen, setSelectedGen] = useState("18");
   const [activeModalPerson, setActiveModalPerson] = useState(null);
   const [currentData, setCurrentData] = useState(pengurusData["18"]);
 
-  // Sync data whenever generation tab changes (with backend sync & local fallback)
+  // Set isMounted to true after client hydration completes
   useEffect(() => {
-    let isMounted = true;
+    setIsMounted(true);
+  }, []);
+
+  // Sync data whenever generation changes, active only after component mounts in browser
+  useEffect(() => {
+    if (!isMounted) return;
+
+    let isSubscribed = true;
     const localGenData = pengurusData[selectedGen] || pengurusData["18"];
     setCurrentData(localGenData);
 
@@ -23,12 +31,11 @@ export default function StrukturOrg() {
         if (!res.ok) return;
         const json = await res.json();
 
-        if (isMounted && json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (isSubscribed && json.success && Array.isArray(json.data) && json.data.length > 0) {
           const backendList = json.data;
           const genNum = parseInt(selectedGen, 10);
           const isAkt18Or19 = genNum === 18 || genNum === 19;
 
-          // Slot penampung terpisah tanpa logika splice / indexOf
           let wadan1 = null;
           let dan = null;
           let wadan2 = null;
@@ -124,16 +131,16 @@ export default function StrukturOrg() {
           });
         }
       } catch (err) {
-        // Fallback otomatis ke localGenData
+        // Fallback otomatis ke localGenData jika jaringan/server bermasalah
       }
     }
 
     syncBackendData();
 
     return () => {
-      isMounted = false;
+      isSubscribed = false;
     };
-  }, [selectedGen]);
+  }, [selectedGen, isMounted]);
 
   // Modal open / close handlers
   const handleOpenModal = (person) => {
@@ -144,8 +151,10 @@ export default function StrukturOrg() {
     setActiveModalPerson(null);
   };
 
-  // Tutup modal dengan tombol Escape
+  // Keyboard accessibility: Tutup modal dengan Escape
   useEffect(() => {
+    if (!isMounted) return;
+
     const handleKeyDown = (e) => {
       if (e.key === "Escape") handleCloseModal();
     };
@@ -153,7 +162,38 @@ export default function StrukturOrg() {
       window.addEventListener("keydown", handleKeyDown);
     }
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeModalPerson]);
+  }, [activeModalPerson, isMounted]);
+
+  // SSR / Pre-hydration Shell (Mencegah Hydration Mismatch 100%)
+  if (!isMounted) {
+    return (
+      <section id="struktur" className="section-padding relative overflow-hidden bg-slate-950/60 min-h-[500px]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold uppercase tracking-wider mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+              Struktur Organisasi
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
+              Personel &amp; Kepengurusan
+            </h2>
+            <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+              Daftar komando dan pengurus Korps Polisi Taruna SMKN 2 Depok berdasarkan hierarki dan divisi penugasan.
+            </p>
+          </div>
+
+          <div className="w-full flex justify-center items-center py-20">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-8 h-8 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" />
+              <span className="text-slate-400 text-xs font-medium tracking-wide">
+                Memuat data struktur organisasi...
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   const pimpinanList = currentData?.pimpinan || [];
   const pktList = currentData?.pkt || [];
@@ -192,11 +232,11 @@ export default function StrukturOrg() {
                 id={`btn-gen-${gen}`}
                 type="button"
                 onClick={() => setSelectedGen(gen)}
-                className={`px-5 py-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
+                className={
                   selectedGen === gen
-                    ? "bg-rose-600 text-white shadow-lg shadow-rose-600/30 border border-rose-500 scale-105"
-                    : "bg-slate-900/80 text-slate-400 border border-white/10 hover:text-white hover:border-white/20 hover:bg-slate-800/80"
-                }`}
+                    ? "px-5 py-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer bg-rose-600 text-white shadow-lg shadow-rose-600/30 border border-rose-500 scale-105"
+                    : "px-5 py-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer bg-slate-900/80 text-slate-400 border border-white/10 hover:text-white hover:border-white/20 hover:bg-slate-800/80"
+                }
               >
                 Angkatan {gen}
               </button>
@@ -216,89 +256,91 @@ export default function StrukturOrg() {
             <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-amber-500/40" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-center">
-            {pimpinanList.map((person, idx) => {
-              const isDanpol =
-                person.position?.toLowerCase().includes("danpol") ||
-                (person.position?.toLowerCase().includes("komandan") &&
-                  !person.position?.toLowerCase().includes("wadan") &&
-                  !person.position?.toLowerCase().includes("wakil")) ||
-                idx === 1;
+          <div className="w-full flex flex-wrap justify-center gap-6">
+            <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+              {pimpinanList.map((person, idx) => {
+                const isDanpol =
+                  person.position?.toLowerCase().includes("danpol") ||
+                  (person.position?.toLowerCase().includes("komandan") &&
+                    !person.position?.toLowerCase().includes("wadan") &&
+                    !person.position?.toLowerCase().includes("wakil")) ||
+                  idx === 1;
 
-              return (
-                <div
-                  key={person.id || idx}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => handleOpenModal(person)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      handleOpenModal(person);
+                return (
+                  <div
+                    key={person.id || idx}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleOpenModal(person)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleOpenModal(person);
+                      }
+                    }}
+                    title="Klik untuk melihat foto"
+                    className={
+                      isDanpol
+                        ? "w-full cursor-pointer group relative rounded-2xl p-6 text-center transition-all duration-300 flex flex-col justify-between bg-gradient-to-b from-amber-500/15 via-slate-900/95 to-slate-900 border-2 border-amber-500/70 shadow-2xl shadow-amber-500/15 md:-translate-y-2 md:scale-105 z-10"
+                        : "w-full cursor-pointer group relative rounded-2xl p-6 text-center transition-all duration-300 flex flex-col justify-between bg-slate-900/80 border border-white/10 hover:border-amber-500/40 hover:shadow-xl hover:shadow-amber-500/5 backdrop-blur-md"
                     }
-                  }}
-                  title="Klik untuk melihat foto"
-                  className={`group relative rounded-2xl p-6 text-center transition-all duration-300 flex flex-col justify-between cursor-pointer ${
-                    isDanpol
-                      ? "bg-gradient-to-b from-amber-500/15 via-slate-900/95 to-slate-900 border-2 border-amber-500/70 shadow-2xl shadow-amber-500/15 md:-translate-y-2 md:scale-105 z-10"
-                      : "bg-slate-900/80 border border-white/10 hover:border-amber-500/40 hover:shadow-xl hover:shadow-amber-500/5 backdrop-blur-md"
-                  }`}
-                >
-                  {isDanpol && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-extrabold uppercase tracking-widest shadow-md">
-                      Pimpinan Tertinggi
-                    </div>
-                  )}
+                  >
+                    {isDanpol && (
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-extrabold uppercase tracking-widest shadow-md">
+                        Pimpinan Tertinggi
+                      </div>
+                    )}
 
-                  <div>
-                    {/* Photo */}
-                    <div
-                      className={`relative mx-auto rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300 shadow-xl border-2 mb-4 ${
-                        isDanpol
-                          ? "w-28 h-28 border-amber-400/80 shadow-amber-500/30"
-                          : "w-24 h-24 border-white/20 group-hover:border-amber-400/60"
-                      }`}
-                    >
-                      <Image
-                        src={person.image || "/images/placeholder.jpg"}
-                        alt={person.name}
-                        width={128}
-                        height={128}
-                        className="w-full h-full object-cover"
-                        unoptimized
-                      />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
-                        </svg>
+                    <div>
+                      {/* Photo */}
+                      <div
+                        className={
+                          isDanpol
+                            ? "relative mx-auto rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300 shadow-xl border-2 mb-4 w-28 h-28 border-amber-400/80 shadow-amber-500/30"
+                            : "relative mx-auto rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300 shadow-xl border-2 mb-4 w-24 h-24 border-white/20 group-hover:border-amber-400/60"
+                        }
+                      >
+                        <Image
+                          src={person.image || "/images/placeholder.jpg"}
+                          alt={person.name}
+                          width={128}
+                          height={128}
+                          className="w-full h-full object-cover"
+                          unoptimized
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                          </svg>
+                        </div>
+                      </div>
+
+                      {/* Full Name */}
+                      <h4 className="text-lg font-bold text-white mb-1.5 tracking-tight group-hover:text-amber-300 transition-colors">
+                        {person.name}
+                      </h4>
+
+                      {/* Position: Pure string as-is */}
+                      <div className="mb-2">
+                        <span
+                          className={
+                            isDanpol
+                              ? "inline-block px-3 py-1 rounded-full text-xs font-semibold border bg-amber-500/15 text-amber-300 border-amber-500/30"
+                              : "inline-block px-3 py-1 rounded-full text-xs font-semibold border bg-amber-500/10 text-amber-200 border border-amber-500/20"
+                          }
+                        >
+                          {person.position}
+                        </span>
                       </div>
                     </div>
 
-                    {/* Name */}
-                    <h4 className="text-lg font-bold text-white mb-1.5 tracking-tight group-hover:text-amber-300 transition-colors">
-                      {person.name}
-                    </h4>
-
-                    {/* Position: Pure string as-is */}
-                    <div className="mb-2">
-                      <span
-                        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${
-                          isDanpol
-                            ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
-                            : "bg-amber-500/10 text-amber-200 border border-amber-500/20"
-                        }`}
-                      >
-                        {person.position}
-                      </span>
-                    </div>
+                    <span className="text-[11px] text-slate-400 font-mono block mt-2">
+                      Angkatan {person.generation || selectedGen}
+                    </span>
                   </div>
-
-                  <span className="text-[11px] text-slate-400 font-mono block mt-2">
-                    Angkatan {person.generation || selectedGen}
-                  </span>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
 
@@ -314,7 +356,7 @@ export default function StrukturOrg() {
             <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-sky-500/40" />
           </div>
 
-          <div className="flex flex-wrap justify-center gap-6 max-w-5xl mx-auto">
+          <div className="w-full flex flex-wrap justify-center gap-6 max-w-5xl mx-auto">
             {pktList.map((person, idx) => {
               const isKetuaPkt =
                 person.position?.toLowerCase().includes("ketua") || idx === 0;
@@ -332,18 +374,20 @@ export default function StrukturOrg() {
                     }
                   }}
                   title="Klik untuk melihat foto"
-                  className={`w-full sm:w-64 md:w-72 rounded-2xl p-5 text-center transition-all duration-300 backdrop-blur-md group flex flex-col justify-between cursor-pointer ${
+                  className={
                     isKetuaPkt
-                      ? "bg-slate-900/90 border-2 border-sky-500/60 shadow-xl shadow-sky-500/10 hover:border-sky-400"
-                      : "bg-slate-900/80 border border-white/10 hover:border-sky-500/50 hover:shadow-lg hover:shadow-sky-500/10"
-                  }`}
+                      ? "w-full sm:w-64 md:w-72 rounded-2xl p-5 text-center transition-all duration-300 backdrop-blur-md group flex flex-col justify-between cursor-pointer bg-slate-900/90 border-2 border-sky-500/60 shadow-xl shadow-sky-500/10 hover:border-sky-400"
+                      : "w-full sm:w-64 md:w-72 rounded-2xl p-5 text-center transition-all duration-300 backdrop-blur-md group flex flex-col justify-between cursor-pointer bg-slate-900/80 border border-white/10 hover:border-sky-500/50 hover:shadow-lg hover:shadow-sky-500/10"
+                  }
                 >
                   <div>
                     {/* Photo */}
                     <div
-                      className={`relative w-24 h-24 mx-auto rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300 shadow-lg border-2 mb-3.5 ${
-                        isKetuaPkt ? "border-sky-400/80 shadow-sky-500/20" : "border-white/15 group-hover:border-sky-500/70"
-                      }`}
+                      className={
+                        isKetuaPkt
+                          ? "relative w-24 h-24 mx-auto rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300 shadow-lg border-2 mb-3.5 border-sky-400/80 shadow-sky-500/20"
+                          : "relative w-24 h-24 mx-auto rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300 shadow-lg border-2 mb-3.5 border-white/15 group-hover:border-sky-500/70"
+                      }
                     >
                       <Image
                         src={person.image || "/images/placeholder.jpg"}
@@ -368,11 +412,11 @@ export default function StrukturOrg() {
                     {/* Position: Pure string as-is */}
                     <div className="mb-2">
                       <span
-                        className={`inline-block px-3 py-0.5 rounded-full text-xs font-semibold ${
+                        className={
                           isKetuaPkt
-                            ? "bg-sky-500/25 text-sky-200 border border-sky-400/50 shadow-sm"
-                            : "bg-sky-500/15 text-sky-300 border border-sky-500/30"
-                        }`}
+                            ? "inline-block px-3 py-0.5 rounded-full text-xs font-semibold bg-sky-500/25 text-sky-200 border border-sky-400/50 shadow-sm"
+                            : "inline-block px-3 py-0.5 rounded-full text-xs font-semibold bg-sky-500/15 text-sky-300 border border-sky-500/30"
+                        }
                       >
                         {person.position}
                       </span>
@@ -400,7 +444,7 @@ export default function StrukturOrg() {
             <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-emerald-500/40" />
           </div>
 
-          <div className="flex flex-wrap justify-center gap-6 max-w-4xl mx-auto">
+          <div className="w-full flex flex-wrap justify-center gap-6 max-w-4xl mx-auto">
             {sekBenList.map((person, idx) => (
               <div
                 key={person.id || idx}
@@ -467,7 +511,7 @@ export default function StrukturOrg() {
             <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-purple-500/40" />
           </div>
 
-          <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
+          <div className="w-full flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
             {divisiOpsList.map((person, idx) => (
               <div
                 key={person.id || idx}
@@ -535,7 +579,7 @@ export default function StrukturOrg() {
               <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-rose-500/40" />
             </div>
 
-            <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
+            <div className="w-full flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
               {anggotaList.map((person, idx) => (
                 <div
                   key={person.id || idx}
