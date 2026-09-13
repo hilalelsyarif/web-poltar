@@ -88,31 +88,40 @@ export default function StrukturOrg() {
                 (item.image_path ? `${backendBase}/storage/${item.image_path}` : "/images/placeholder.jpg"),
             };
 
-            // 1. Pimpinan Komando
+            // 1. Pimpinan Komando (Wadanpol 1/Wadanki 1, Danpol/Danki, Wadanpol 2/Wadanki 2)
             if (
               posLower.includes("wadanpol 1") ||
+              posLower.includes("wadanki 1") ||
               posLower.includes("wadan 1") ||
-              posLower.includes("wakil 1") ||
-              posLower.includes("wadanpol i")
+              posLower.includes("wadanki i") ||
+              posLower.includes("wadanpol i") ||
+              posLower.includes("wakil 1")
             ) {
               wadan1 = personObj;
             } else if (
               posLower.includes("wadanpol 2") ||
+              posLower.includes("wadanki 2") ||
               posLower.includes("wadan 2") ||
-              posLower.includes("wakil 2") ||
-              posLower.includes("wadanpol ii")
+              posLower.includes("wadanki ii") ||
+              posLower.includes("wadanpol ii") ||
+              posLower.includes("wakil 2")
             ) {
               wadan2 = personObj;
             } else if (
-              (posLower.includes("danpol") || posLower.includes("komandan")) &&
+              (posLower.includes("danpol") ||
+                posLower.includes("danki") ||
+                posLower.includes("komandan")) &&
               !posLower.includes("wadan") &&
+              !posLower.includes("wadanki") &&
               !posLower.includes("wakil")
             ) {
               dan = personObj;
             } else if (
               posLower.includes("danpol") ||
+              posLower.includes("danki") ||
               posLower.includes("komandan") ||
-              posLower.includes("wadan")
+              posLower.includes("wadan") ||
+              posLower.includes("wadanki")
             ) {
               pimpinanLain.push(personObj);
             }
@@ -291,10 +300,12 @@ export default function StrukturOrg() {
           <div className="w-full flex flex-wrap justify-center gap-6">
             <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
               {pimpinanList.map((person, idx) => {
-                const isDanpol =
+                const isDanpolOrDanki =
                   person.position?.toLowerCase().includes("danpol") ||
+                  person.position?.toLowerCase().includes("danki") ||
                   (person.position?.toLowerCase().includes("komandan") &&
                     !person.position?.toLowerCase().includes("wadan") &&
+                    !person.position?.toLowerCase().includes("wadanki") &&
                     !person.position?.toLowerCase().includes("wakil")) ||
                   idx === 1;
 
@@ -312,12 +323,12 @@ export default function StrukturOrg() {
                     }}
                     title="Klik untuk melihat foto"
                     className={
-                      isDanpol
+                      isDanpolOrDanki
                         ? "w-full cursor-pointer group relative rounded-2xl p-6 text-center transition-all duration-300 flex flex-col justify-between bg-gradient-to-b from-amber-500/15 via-slate-900/95 to-slate-900 border-2 border-amber-500/70 shadow-2xl shadow-amber-500/15 md:-translate-y-2 md:scale-105 z-10"
                         : "w-full cursor-pointer group relative rounded-2xl p-6 text-center transition-all duration-300 flex flex-col justify-between bg-slate-900/80 border border-white/10 hover:border-amber-500/40 hover:shadow-xl hover:shadow-amber-500/5 backdrop-blur-md"
                     }
                   >
-                    {isDanpol && (
+                    {isDanpolOrDanki && (
                       <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-extrabold uppercase tracking-widest shadow-md">
                         Pimpinan Tertinggi
                       </div>
@@ -327,7 +338,7 @@ export default function StrukturOrg() {
                       {/* Photo */}
                       <div
                         className={
-                          isDanpol
+                          isDanpolOrDanki
                             ? "relative mx-auto rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300 shadow-xl border-2 mb-4 w-28 h-28 border-amber-400/80 shadow-amber-500/30"
                             : "relative mx-auto rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300 shadow-xl border-2 mb-4 w-24 h-24 border-white/20 group-hover:border-amber-400/60"
                         }
@@ -356,7 +367,7 @@ export default function StrukturOrg() {
                       <div className="mb-2">
                         <span
                           className={
-                            isDanpol
+                            isDanpolOrDanki
                               ? "inline-block px-3 py-1 rounded-full text-xs font-semibold border bg-amber-500/15 text-amber-300 border-amber-500/30"
                               : "inline-block px-3 py-1 rounded-full text-xs font-semibold border bg-amber-500/10 text-amber-200 border border-amber-500/20"
                           }
