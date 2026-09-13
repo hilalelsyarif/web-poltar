@@ -67,7 +67,7 @@ class StructureController extends Controller
                 'name'       => 'Nama Personel',
                 'position'   => $item['position'],
                 'generation' => (string) $gen,
-                'image_path' => null,
+                'image_path' => '',
             ]);
         }
     }
@@ -139,7 +139,7 @@ class StructureController extends Controller
                 'image'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096'
             ]);
 
-            $imagePath = null;
+            $imagePath = '';
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('structures', 'public');
             }
@@ -148,7 +148,7 @@ class StructureController extends Controller
                 'name'       => $request->name,
                 'position'   => $request->position,
                 'generation' => (string) $request->generation,
-                'image_path' => $imagePath
+                'image_path' => $imagePath ?? ''
             ]);
 
             return response()->json([

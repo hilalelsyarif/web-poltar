@@ -16,7 +16,7 @@ return new class extends Migration
         $table->string('name');
         $table->string('position');
         $table->integer('generation');
-        $table->string('image_path');
+        $table->string('image_path')->nullable()->default('');
         $table->timestamps();
     });
 }
