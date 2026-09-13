@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import VisiMisi from "@/components/VisiMisi";
-import Struktur from "@/components/Struktur";
+import StrukturOrg from "@/components/StrukturOrg";
 import TugasPokok from "@/components/TugasPokok";
 import Kegiatan from "@/components/Kegiatan";
 import Pengaduan from "@/components/Pengaduan";
@@ -36,7 +36,7 @@ export default function Home() {
         <Hero onOpenModal={handleOpenModal} />
         <About />
         <VisiMisi />
-        <Struktur />
+        <StrukturOrg />
         <TugasPokok />
         <Kegiatan onOpenModal={handleOpenModal} />
         <Pengaduan />
