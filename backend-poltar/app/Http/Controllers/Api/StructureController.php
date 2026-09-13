@@ -5,16 +5,86 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Structure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage; // BARIS INI ANJIR YANG KURANG!
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class StructureController extends Controller
 {
-    // 1. Dapatkan semua data struktur
+    /**
+     * Auto-seed template pengurus bersih per angkatan
+     */
+    private function seedDefaultsForGen(string $gen): void
+    {
+        $genNum = (int) $gen;
+        $isAkt22 = $genNum === 22;
+        $isAkt18Or19 = $genNum === 18 || $genNum === 19;
+
+        $items = [];
+
+        // 1. Pimpinan Komando
+        if ($isAkt22) {
+            $items[] = ['position' => 'Wadanki 1'];
+            $items[] = ['position' => 'Danki'];
+            $items[] = ['position' => 'Wadanki 2'];
+        } else {
+            $items[] = ['position' => 'Wadanpol 1'];
+            $items[] = ['position' => 'Danpol'];
+            $items[] = ['position' => 'Wadanpol 2'];
+        }
+
+        // 2. PKT (1 Ketua + 3 Anggota = 4 slot)
+        $items[] = ['position' => 'Ketua PKT'];
+        $items[] = ['position' => 'PKT'];
+        $items[] = ['position' => 'PKT'];
+        $items[] = ['position' => 'PKT'];
+
+        // 3. Sekretaris & Bendahara
+        $items[] = ['position' => 'Sekretaris'];
+        $items[] = ['position' => 'Bendahara'];
+
+        // 4. Divisi Operasional (TIK 2, Jasmani 2, Humas 2, Linmas 2 jika 18/19)
+        $items[] = ['position' => 'TIK'];
+        $items[] = ['position' => 'TIK'];
+        $items[] = ['position' => 'Jasmani'];
+        $items[] = ['position' => 'Jasmani'];
+        $items[] = ['position' => 'Humas'];
+        $items[] = ['position' => 'Humas'];
+
+        if ($isAkt18Or19) {
+            $items[] = ['position' => 'Linmas'];
+            $items[] = ['position' => 'Linmas'];
+        }
+
+        // 5. Anggota (Khusus Akt 18 & 19 - 3 slot)
+        if ($isAkt18Or19) {
+            $items[] = ['position' => 'Anggota'];
+            $items[] = ['position' => 'Anggota'];
+            $items[] = ['position' => 'Anggota'];
+        }
+
+        foreach ($items as $item) {
+            Structure::create([
+                'name'       => 'Nama Personel',
+                'position'   => $item['position'],
+                'generation' => (string) $gen,
+                'image_path' => null,
+            ]);
+        }
+    }
+
+    /**
+     * 1. Dapatkan semua data struktur (Auto-seed jika kosong)
+     */
     public function index()
     {
         try {
-            $structures = Structure::latest()->get();
+            if (Structure::count() === 0) {
+                foreach (['18', '19', '20', '21', '22'] as $gen) {
+                    $this->seedDefaultsForGen($gen);
+                }
+            }
+
+            $structures = Structure::orderBy('generation', 'asc')->get();
 
             return response()->json([
                 'success' => true,
@@ -28,15 +98,24 @@ class StructureController extends Controller
         }
     }
 
-    // 2. Dapatkan data struktur per Angkatan
+    /**
+     * 2. Dapatkan data struktur per Angkatan (Auto-seed jika angkatan kosong)
+     */
     public function getByGen($gen)
     {
         try {
-            $structures = Structure::where('generation', (string) $gen)->get();
+            $genStr = (string) $gen;
+            $count = Structure::where('generation', $genStr)->count();
+
+            if ($count === 0 && in_array($genStr, ['18', '19', '20', '21', '22'])) {
+                $this->seedDefaultsForGen($genStr);
+            }
+
+            $structures = Structure::where('generation', $genStr)->get();
 
             return response()->json([
                 'success'    => true,
-                'generation' => (string) $gen,
+                'generation' => $genStr,
                 'data'       => $structures
             ], 200);
         } catch (Throwable $e) {
@@ -47,7 +126,9 @@ class StructureController extends Controller
         }
     }
 
-    // 3. Tambah Data Anggota Baru
+    /**
+     * 3. Tambah Data Anggota Baru (POST)
+     */
     public function store(Request $request)
     {
         try {
@@ -55,7 +136,7 @@ class StructureController extends Controller
                 'name'       => 'required|string|max:255',
                 'position'   => 'required|string|max:255',
                 'generation' => 'required',
-                'image'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
+                'image'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096'
             ]);
 
             $imagePath = null;
@@ -83,7 +164,66 @@ class StructureController extends Controller
         }
     }
 
-    // 4. Hapus Data Anggota (BEBAS ERROR CLASS NOT FOUND!)
+    /**
+     * 4. Update Data Anggota (PUT / PATCH / POST dengan multipart)
+     */
+    public function update(Request $request, $id)
+    {
+        try {
+            $structure = Structure::find($id);
+            if (!$structure) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data personel tidak ditemukan'
+                ], 404);
+            }
+
+            $request->validate([
+                'name'       => 'nullable|string|max:255',
+                'position'   => 'nullable|string|max:255',
+                'generation' => 'nullable',
+                'image'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096'
+            ]);
+
+            if ($request->has('name') && !empty($request->name)) {
+                $structure->name = $request->name;
+            }
+
+            if ($request->has('position') && !empty($request->position)) {
+                $structure->position = $request->position;
+            }
+
+            if ($request->has('generation') && !empty($request->generation)) {
+                $structure->generation = (string) $request->generation;
+            }
+
+            if ($request->hasFile('image')) {
+                // Hapus foto lama jika ada di storage
+                if ($structure->image_path && Storage::disk('public')->exists($structure->image_path)) {
+                    Storage::disk('public')->delete($structure->image_path);
+                }
+
+                $structure->image_path = $request->file('image')->store('structures', 'public');
+            }
+
+            $structure->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data personel berhasil diperbarui',
+                'data'    => $structure
+            ], 200);
+        } catch (Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * 5. Hapus Data Anggota (DELETE)
+     */
     public function destroy($id)
     {
         try {
@@ -96,7 +236,7 @@ class StructureController extends Controller
             }
 
             // Hapus file foto dari folder storage jika ada
-            if ($structure->image_path) {
+            if ($structure->image_path && Storage::disk('public')->exists($structure->image_path)) {
                 Storage::disk('public')->delete($structure->image_path);
             }
 

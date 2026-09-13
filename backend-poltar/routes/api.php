@@ -19,9 +19,11 @@ Route::post('/reports', [ReportController::class, 'store']);
 Route::get('/reports/track/{ticket_code}', [ReportController::class, 'checkStatus']);
 Route::get('/activities', [PublicController::class, 'getActivities']);
 
-// ROUTE STRUKTUR ORGANISASI (Bisa dibaca index.html & Admin Dashboard)
+// ROUTE STRUKTUR ORGANISASI / PENGURUS (Auto-seed jika data kosong)
 Route::get('/structures', [StructureController::class, 'index']);
 Route::get('/structures/{gen}', [StructureController::class, 'getByGen']);
+Route::get('/pengurus', [StructureController::class, 'index']);
+Route::get('/pengurus/{gen}', [StructureController::class, 'getByGen']);
 
 
 // ================= 2. AUTH ROUTES (Login, Register & Google OAuth) =================
@@ -67,7 +69,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         return response()->json(['success' => false, 'message' => 'Tiket tidak ditemukan'], 404);
     });
 
-    // 3. Tambah & Hapus Anggota Struktur Komando (Diarahkan langsung ke StructureController)
+    // 3. Tambah, Update, & Hapus Anggota Struktur Komando (StructureController)
+    // Support POST (tambah), PUT/PATCH (update), POST /{id} (update multipart file), dan DELETE
     Route::post('/structures', [StructureController::class, 'store']);
+    Route::match(['put', 'patch', 'post'], '/structures/{id}', [StructureController::class, 'update']);
     Route::delete('/structures/{id}', [StructureController::class, 'destroy']);
+
+    // Alias /pengurus untuk kemudahan kompatibilitas
+    Route::post('/pengurus', [StructureController::class, 'store']);
+    Route::match(['put', 'patch', 'post'], '/pengurus/{id}', [StructureController::class, 'update']);
+    Route::delete('/pengurus/{id}', [StructureController::class, 'destroy']);
 });

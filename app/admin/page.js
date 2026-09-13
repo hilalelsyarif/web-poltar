@@ -21,6 +21,16 @@ export default function AdminPage() {
   const [submittingStruct, setSubmittingStruct] = useState(false);
   const [structAlert, setStructAlert] = useState(null);
 
+  // Edit structure state & filter
+  const [editingPerson, setEditingPerson] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editPosition, setEditPosition] = useState("");
+  const [editGen, setEditGen] = useState("");
+  const [editImage, setEditImage] = useState(null);
+  const [submittingEdit, setSubmittingEdit] = useState(false);
+  const [editAlert, setEditAlert] = useState(null);
+  const [adminGenFilter, setAdminGenFilter] = useState("all");
+
   useEffect(() => {
     const savedToken = localStorage.getItem("auth_token");
     const role = localStorage.getItem("user_role");
@@ -111,11 +121,6 @@ export default function AdminPage() {
 
   const submitStructure = async (e) => {
     e.preventDefault();
-    if (!structImage) {
-      alert("Pilih foto profil!");
-      return;
-    }
-
     setSubmittingStruct(true);
     setStructAlert(null);
 
@@ -123,7 +128,9 @@ export default function AdminPage() {
     formData.append("name", structName);
     formData.append("position", structPosition);
     formData.append("generation", structGen);
-    formData.append("image", structImage);
+    if (structImage) {
+      formData.append("image", structImage);
+    }
 
     try {
       const res = await fetch(`${getBackendBase()}/api/structures`, {
@@ -150,6 +157,59 @@ export default function AdminPage() {
       setStructAlert({ type: "error", message: `Error: ${err.message}` });
     } finally {
       setSubmittingStruct(false);
+    }
+  };
+
+  const openEditModal = (person) => {
+    setEditingPerson(person);
+    setEditName(person.name || "");
+    setEditPosition(person.position || "");
+    setEditGen(person.generation || "");
+    setEditImage(null);
+    setEditAlert(null);
+  };
+
+  const closeEditModal = () => {
+    setEditingPerson(null);
+    setEditAlert(null);
+  };
+
+  const submitUpdateStructure = async (e) => {
+    e.preventDefault();
+    if (!editingPerson) return;
+    setSubmittingEdit(true);
+    setEditAlert(null);
+
+    const formData = new FormData();
+    formData.append("name", editName);
+    formData.append("position", editPosition);
+    formData.append("generation", editGen);
+    if (editImage) {
+      formData.append("image", editImage);
+    }
+
+    try {
+      const res = await fetch(`${getBackendBase()}/api/structures/${editingPerson.id}`, {
+        method: "POST", // POST endpoint supports multipart file updates in backend
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      const result = await res.json();
+
+      if (res.ok && result.success) {
+        alert(`Data personel "${editName}" berhasil diperbarui.`);
+        setEditingPerson(null);
+        loadStructures();
+      } else {
+        throw new Error(result.message || "Gagal memperbarui data personel.");
+      }
+    } catch (err) {
+      setEditAlert({ type: "error", message: `Error: ${err.message}` });
+    } finally {
+      setSubmittingEdit(false);
     }
   };
 
@@ -287,11 +347,29 @@ export default function AdminPage() {
                 type="text"
                 id="struct_position"
                 required
+                list="admin-position-suggestions"
                 value={structPosition}
                 onChange={(e) => setStructPosition(e.target.value)}
                 className="form-control"
-                placeholder="Contoh: Ketua / Komandan Poltar"
+                placeholder="Pilih atau ketik jabatan..."
               />
+              <datalist id="admin-position-suggestions">
+                <option value="Wadanki 1" />
+                <option value="Danki" />
+                <option value="Wadanki 2" />
+                <option value="Wadanpol 1" />
+                <option value="Danpol" />
+                <option value="Wadanpol 2" />
+                <option value="Ketua PKT" />
+                <option value="PKT" />
+                <option value="Sekretaris" />
+                <option value="Bendahara" />
+                <option value="TIK" />
+                <option value="Jasmani" />
+                <option value="Humas" />
+                <option value="Linmas" />
+                <option value="Anggota" />
+              </datalist>
             </div>
             <div>
               <label className="block text-slate-300 mb-1 font-medium">Angkatan (Angka) *</label>
@@ -306,15 +384,15 @@ export default function AdminPage() {
               />
             </div>
             <div>
-              <label className="block text-slate-300 mb-1 font-medium">Foto Profil *</label>
+              <label className="block text-slate-300 mb-1 font-medium">Foto Profil (Opsional)</label>
               <input
                 type="file"
                 id="struct_image"
                 accept="image/*"
-                required
                 onChange={(e) => setStructImage(e.target.files[0] || null)}
                 className="w-full text-slate-400 text-xs file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:bg-white/10 file:text-white file:text-xs cursor-pointer"
               />
+              <p className="text-[10px] text-slate-500 mt-1">Gunakan default jika belum ada foto</p>
             </div>
             <div className="sm:col-span-2 md:col-span-4 pt-1">
               <button
@@ -454,20 +532,41 @@ export default function AdminPage() {
 
         {/* Section 3: Daftar Anggota Terdaftar */}
         <div className="glass-card p-6">
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/10">
-            <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                />
-              </svg>
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-white/10">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-sm font-bold text-white">Daftar Personel Struktur</h2>
+                <p className="text-[11px] text-slate-400">Data kepengurusan yang tampil di halaman publik</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-sm font-bold text-white">Daftar Personel Struktur</h2>
-              <p className="text-[11px] text-slate-400">Data kepengurusan yang tampil di halaman publik</p>
+
+            {/* Filter Angkatan Tabs */}
+            <div className="flex flex-wrap items-center gap-1.5 text-xs">
+              <span className="text-[11px] text-slate-400 mr-1">Filter Angkatan:</span>
+              {["all", "18", "19", "20", "21", "22"].map((gen) => (
+                <button
+                  key={gen}
+                  type="button"
+                  onClick={() => setAdminGenFilter(gen)}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer ${
+                    adminGenFilter === gen
+                      ? "bg-rose-600 text-white font-bold"
+                      : "bg-white/5 text-slate-400 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  {gen === "all" ? "Semua" : `Akt. ${gen}`}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -490,32 +589,55 @@ export default function AdminPage() {
                     </td>
                   </tr>
                 ) : structures.length > 0 ? (
-                  structures.map((item, idx) => (
-                    <tr key={idx} className="hover:bg-white/5 transition border-b border-white/5">
-                      <td className="p-3">
-                        <img
-                          src={
-                            item.image_path
-                              ? `${getBackendBase()}/storage/${item.image_path}`
-                              : "/images/logopoltar.jpg"
-                          }
-                          alt={item.name}
-                          className="w-9 h-9 object-cover rounded-lg border border-white/10"
-                        />
-                      </td>
-                      <td className="p-3 font-semibold text-white">{item.name}</td>
-                      <td className="p-3 text-amber-400 font-medium">{item.position}</td>
-                      <td className="p-3 text-slate-300">Angkatan {item.generation}</td>
-                      <td className="p-3">
-                        <button
-                          onClick={() => deleteStructure(item.id)}
-                          className="bg-rose-950 hover:bg-rose-900 text-rose-200 border border-rose-800/80 px-2.5 py-1 rounded-md transition text-xs cursor-pointer"
-                        >
-                          Hapus
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+                  structures
+                    .filter(
+                      (item) =>
+                        adminGenFilter === "all" ||
+                        String(item.generation) === String(adminGenFilter)
+                    )
+                    .map((item, idx) => (
+                      <tr key={item.id || idx} className="hover:bg-white/5 transition border-b border-white/5">
+                        <td className="p-3">
+                          <img
+                            src={
+                              item.image_url ||
+                              (item.image_path
+                                ? `${getBackendBase()}/storage/${item.image_path}`
+                                : "/images/placeholder.jpg")
+                            }
+                            alt={item.name}
+                            className="w-10 h-10 object-cover rounded-full border border-white/20"
+                          />
+                        </td>
+                        <td className="p-3 font-semibold text-white">{item.name}</td>
+                        <td className="p-3 text-amber-400 font-medium">
+                          <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-xs">
+                            {item.position}
+                          </span>
+                        </td>
+                        <td className="p-3 text-slate-300 font-mono">Angkatan {item.generation}</td>
+                        <td className="p-3">
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => openEditModal(item)}
+                              className="bg-sky-950/80 hover:bg-sky-900 text-sky-200 border border-sky-700/60 px-2.5 py-1 rounded-md transition text-xs cursor-pointer inline-flex items-center gap-1"
+                              title="Edit nama, jabatan, atau ganti foto"
+                            >
+                              <span>✏️</span>
+                              <span>Edit / Foto</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => deleteStructure(item.id)}
+                              className="bg-rose-950 hover:bg-rose-900 text-rose-200 border border-rose-800/80 px-2.5 py-1 rounded-md transition text-xs cursor-pointer"
+                            >
+                              Hapus
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
                 ) : (
                   <tr>
                     <td colSpan="5" className="p-6 text-center text-slate-500">
@@ -527,6 +649,130 @@ export default function AdminPage() {
             </table>
           </div>
         </div>
+
+        {/* Modal Edit Personel & Upload Foto */}
+        {editingPerson && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="relative max-w-lg w-full bg-slate-900 border border-white/20 rounded-2xl p-6 shadow-2xl overflow-hidden">
+              <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">✏️</span>
+                  <h3 className="text-sm font-bold text-white">Edit Data Personel &amp; Foto</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeEditModal}
+                  className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition"
+                  aria-label="Tutup modal"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={submitUpdateStructure} className="space-y-4 text-xs">
+                {/* Current Photo Preview */}
+                <div className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/10">
+                  <img
+                    src={
+                      editingPerson.image_url ||
+                      (editingPerson.image_path
+                        ? `${getBackendBase()}/storage/${editingPerson.image_path}`
+                        : "/images/placeholder.jpg")
+                    }
+                    alt={editingPerson.name}
+                    className="w-14 h-14 object-cover rounded-full border-2 border-amber-400/60 shadow"
+                  />
+                  <div>
+                    <span className="text-[11px] text-slate-400 block mb-0.5">Sedang Mengedit:</span>
+                    <strong className="text-white text-sm block">{editingPerson.name}</strong>
+                    <span className="text-amber-400 text-xs font-mono">{editingPerson.position} • Angkatan {editingPerson.generation}</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 mb-1 font-medium">Nama Lengkap *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="form-control"
+                    placeholder="Nama personel"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 mb-1 font-medium">Jabatan / Posisi *</label>
+                  <input
+                    type="text"
+                    required
+                    list="admin-position-suggestions"
+                    value={editPosition}
+                    onChange={(e) => setEditPosition(e.target.value)}
+                    className="form-control"
+                    placeholder="Pilih atau ketik jabatan..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 mb-1 font-medium">Angkatan *</label>
+                  <input
+                    type="number"
+                    required
+                    value={editGen}
+                    onChange={(e) => setEditGen(e.target.value)}
+                    className="form-control"
+                    placeholder="Contoh: 22"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 mb-1 font-medium">
+                    Upload / Ganti Foto Profil (Opsional)
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setEditImage(e.target.files[0] || null)}
+                    className="w-full text-slate-400 text-xs file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:bg-white/10 file:text-white file:text-xs cursor-pointer"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    Pilih file gambar jika ingin mengganti foto saat ini.
+                  </p>
+                </div>
+
+                {editAlert && (
+                  <div
+                    className={`p-2.5 rounded-lg text-xs ${
+                      editAlert.type === "success"
+                        ? "bg-emerald-950/80 border border-emerald-700 text-emerald-300"
+                        : "bg-rose-950/80 border border-rose-700 text-rose-200"
+                    }`}
+                  >
+                    {editAlert.message}
+                  </div>
+                )}
+
+                <div className="flex gap-2 justify-end pt-3 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={closeEditModal}
+                    className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition cursor-pointer"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submittingEdit}
+                    className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition cursor-pointer disabled:opacity-50"
+                  >
+                    {submittingEdit ? "Menyimpan..." : "Simpan Perubahan"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

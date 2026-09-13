@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Structure extends Model
 {
@@ -22,9 +21,12 @@ class Structure extends Model
 
     public function getImageUrlAttribute()
     {
-        if ($this->image_path) {
+        if (!empty($this->image_path)) {
+            if (str_starts_with($this->image_path, 'http') || str_starts_with($this->image_path, '/images/')) {
+                return $this->image_path;
+            }
             return asset('storage/' . $this->image_path);
         }
-        return null;
+        return '/images/placeholder.jpg';
     }
 }
