@@ -7,6 +7,7 @@ export default function Navbar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [activeNav, setActiveNav] = useState("hero");
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     // Read auth token & user from localStorage if present
@@ -18,9 +19,11 @@ export default function Navbar() {
       setUser({ token, name, role });
     }
 
-    // Scrollspy
+    // Scrollspy & Scroll blur
     const navSections = ["hero", "about", "visimisi", "struktur", "tugas", "kegiatan", "kontak"];
     const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+
       let current = "hero";
       navSections.forEach((id) => {
         const section = document.getElementById(id);
@@ -50,7 +53,11 @@ export default function Navbar() {
       {/* NAVBAR */}
       <nav
         id="navbar"
-        className="fixed top-0 w-full z-50 bg-[#090d16]/85 backdrop-blur-xl border-b border-white/10 transition-all duration-300"
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+          isScrolled
+            ? "bg-[#050811]/90 backdrop-blur-xl border-b border-white/10 shadow-xl shadow-black/40 py-2.5 sm:py-3"
+            : "bg-[#050811]/60 backdrop-blur-md border-b border-white/5 py-3.5 sm:py-4"
+        }`}
       >
         <div className="container mx-auto flex justify-between items-center gap-2 max-w-7xl px-3 sm:px-6 py-3 sm:py-3.5">
           {/* Left: Hamburger (3 baris) + Brand */}
@@ -79,7 +86,7 @@ export default function Navbar() {
               </svg>
             </button>
 
-            <div className="flex items-center space-x-1.5 p-1 bg-white/5 rounded-lg border border-white/10 flex-shrink-0">
+            <div className="flex items-center space-x-1.5 p-1.5 bg-gradient-to-r from-white/[0.08] to-white/[0.03] rounded-xl border border-white/15 shadow-inner flex-shrink-0">
               <img
                 src="/images/logodudep.jpg"
                 alt="Logo SMKN 2 Depok"
@@ -98,10 +105,10 @@ export default function Navbar() {
             </div>
 
             <div className="min-w-0 hidden sm:block">
-              <span className="font-bold text-sm sm:text-base tracking-tight text-white block leading-tight truncate">
+              <span className="font-extrabold text-sm sm:text-base tracking-wider text-white block leading-tight truncate">
                 POLISI TARUNA
               </span>
-              <span className="text-[10px] sm:text-xs text-amber-400 font-semibold tracking-wider block truncate">
+              <span className="text-[10px] sm:text-xs text-amber-400 font-bold tracking-widest block truncate font-mono">
                 SMKN 2 DEPOK
               </span>
             </div>
@@ -224,7 +231,7 @@ export default function Navbar() {
       <aside
         id="sidebarMenu"
         aria-hidden={!sidebarOpen}
-        className={`fixed top-0 left-0 h-full w-[280px] sm:w-80 max-w-[85vw] bg-[#0c1220] border-r border-white/10 z-[70] transition-transform duration-300 ease-out flex flex-col shadow-2xl ${
+        className={`fixed top-0 left-0 h-full w-[280px] sm:w-80 max-w-[85vw] bg-[#050811]/95 backdrop-blur-2xl border-r border-white/10 z-[70] transition-transform duration-300 ease-out flex flex-col shadow-2xl ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

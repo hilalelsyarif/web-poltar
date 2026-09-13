@@ -3,33 +3,38 @@
 @tailwind utilities;
 
 :root {
-  --bg-dark: #090d16;
-  --bg-surface: #0f172a;
-  --bg-card: rgba(18, 26, 43, 0.75);
-  --bg-card-hover: rgba(28, 38, 62, 0.85);
-  --bg-card-solid: #131b2e;
+  --bg-dark: #050811;
+  --bg-surface: #090e1c;
+  --bg-navy-card: rgba(11, 18, 36, 0.75);
+  --bg-navy-card-hover: rgba(16, 26, 52, 0.88);
+  --bg-card: rgba(11, 18, 36, 0.75);
+  --bg-card-hover: rgba(18, 29, 58, 0.88);
+  --bg-card-solid: #0d152a;
 
   --accent-red: #e11d48;
   --accent-red-hover: #f43f5e;
-  --accent-red-glow: rgba(225, 29, 72, 0.25);
+  --accent-red-glow: rgba(225, 29, 72, 0.3);
   --accent-red-subtle: rgba(225, 29, 72, 0.12);
 
   --accent-gold: #f59e0b;
   --accent-gold-hover: #fbbf24;
   --accent-gold-subtle: rgba(245, 158, 11, 0.12);
 
+  --accent-blue: #3b82f6;
+  --accent-blue-subtle: rgba(59, 130, 246, 0.12);
+
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
 
   --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(255, 255, 255, 0.18);
+  --border-hover: rgba(255, 255, 255, 0.2);
   --border-red: rgba(225, 29, 72, 0.35);
   --border-gold: rgba(245, 158, 11, 0.3);
 
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
   --radius-full: 9999px;
 }
 
@@ -54,7 +59,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-dark);
+  background: #050811;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -68,30 +73,39 @@ body {
 
 /* Ambient Animated & Mesh Gradient Background */
 .ambient-bg {
-  background-color: var(--bg-dark);
+  background-color: #050811;
   background-image: 
-    radial-gradient(at 0% 0%, rgba(225, 29, 72, 0.12) 0px, transparent 50%),
-    radial-gradient(at 100% 30%, rgba(245, 158, 11, 0.07) 0px, transparent 45%),
-    radial-gradient(at 50% 80%, rgba(225, 29, 72, 0.08) 0px, transparent 50%),
-    radial-gradient(at 10% 90%, rgba(30, 41, 59, 0.5) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(225, 29, 72, 0.14) 0px, transparent 45%),
+    radial-gradient(at 100% 15%, rgba(14, 116, 144, 0.12) 0px, transparent 45%),
+    radial-gradient(at 50% 50%, rgba(245, 158, 11, 0.06) 0px, transparent 50%),
+    radial-gradient(at 85% 85%, rgba(225, 29, 72, 0.09) 0px, transparent 45%),
+    radial-gradient(at 10% 90%, rgba(15, 23, 42, 0.7) 0px, transparent 55%);
   background-attachment: fixed;
+}
+
+/* Tactical Grid Overlay Background */
+.tactical-grid-bg {
+  background-size: 36px 36px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
 }
 
 /* Glassmorphism Cards */
 .glass-card {
   background: var(--bg-card);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
   border-color: var(--border-hover);
   background: var(--bg-card-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .glass-card-interactive {
@@ -99,52 +113,54 @@ body {
 }
 
 .glass-card-interactive:hover {
-  border-color: rgba(225, 29, 72, 0.4);
-  box-shadow: 0 14px 32px -8px var(--accent-red-glow);
+  border-color: rgba(225, 29, 72, 0.45);
+  box-shadow: 0 16px 36px -10px var(--accent-red-glow);
 }
 
 /* Badges */
 .badge-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.85rem;
+  gap: 0.45rem;
+  padding: 0.4rem 0.95rem;
   border-radius: var(--radius-full);
   font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  background: var(--accent-red-subtle);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background: rgba(225, 29, 72, 0.12);
   color: #fda4af;
   border: 1px solid var(--border-red);
+  box-shadow: 0 2px 10px rgba(225, 29, 72, 0.15);
 }
 
 .badge-pill-gold {
-  background: var(--accent-gold-subtle);
+  background: rgba(245, 158, 11, 0.12);
   color: #fde68a;
   border: 1px solid var(--border-gold);
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.15);
 }
 
 /* Buttons */
 .btn-primary {
   background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
   color: #ffffff;
-  font-weight: 600;
-  padding: 0.65rem 1.25rem;
+  font-weight: 700;
+  padding: 0.75rem 1.4rem;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 14px var(--accent-red-glow);
+  gap: 0.6rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 6px 18px var(--accent-red-glow);
   cursor: pointer;
 }
 
 .btn-primary:hover {
   background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px var(--accent-red-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--accent-red-glow);
   color: #ffffff;
 }
 
@@ -153,25 +169,33 @@ body {
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--text-primary);
-  font-weight: 600;
-  padding: 0.65rem 1.25rem;
+  font-weight: 700;
+  padding: 0.75rem 1.4rem;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  transition: all 0.2s ease;
+  gap: 0.6rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
   cursor: pointer;
 }
 
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
   color: #ffffff;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
 }
 
 /* Navigation Link */

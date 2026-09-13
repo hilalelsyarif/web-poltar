@@ -52,12 +52,12 @@ export default function Struktur() {
   }, [selectedGen]);
 
   return (
-    <section id="struktur" className="py-16 border-t border-white/5">
-      <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
-        <div className="text-center max-w-2xl mx-auto mb-10">
+    <section id="struktur" className="py-20 sm:py-24 border-t border-white/5 relative overflow-hidden bg-[#050811]/60">
+      <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-14">
           <div className="badge-pill mb-3">Struktur Organisasi</div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Personel &amp; Kepengurusan</h2>
-          <p className="text-slate-400 text-xs sm:text-sm mt-2">
+          <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">Personel &amp; Kepengurusan</h2>
+          <p className="text-slate-400 text-xs sm:text-sm mt-2.5 leading-relaxed">
             Daftar anggota dan pengurus Polisi Taruna SMKN 2 Depok berdasarkan angkatan.
           </p>
 

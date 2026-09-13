@@ -2,31 +2,31 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="pt-16 pb-12 border-t border-white/10 bg-[#060910] relative overflow-hidden">
-      {/* Subtle Top Glow */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-rose-500/50 to-transparent"></div>
-      <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-24 bg-rose-500/10 blur-3xl pointer-events-none"></div>
+    <footer className="pt-20 pb-14 border-t border-white/10 bg-[#03060d] relative overflow-hidden">
+      {/* Subtle Top Glow & Tactical Light */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-rose-500/60 to-transparent"></div>
+      <div className="absolute -top-28 left-1/2 -translate-x-1/2 w-[550px] h-32 bg-rose-500/10 blur-[100px] pointer-events-none"></div>
 
-      <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/10">
+      <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12 pb-14 border-b border-white/10">
           {/* Col 1: Brand & Info */}
-          <div className="md:col-span-5 space-y-4 text-left">
+          <div className="lg:col-span-5 space-y-4 text-left">
             <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-1.5 p-1.5 bg-white/5 rounded-xl border border-white/10">
+              <div className="flex items-center space-x-1.5 p-2 bg-gradient-to-r from-white/[0.08] to-white/[0.03] rounded-xl border border-white/15 shadow-inner">
                 <img src="/images/logodudep.jpg" alt="Logo SMKN 2 Depok" className="h-8 w-auto mix-blend-screen" />
                 <img src="/images/logokorps.jpg" alt="Korps Taruna" className="h-8 w-auto mix-blend-screen" />
                 <img src="/images/logopoltar.jpg" alt="Logo Polisi Taruna" className="h-8 w-auto mix-blend-screen" />
               </div>
               <div>
-                <span className="font-bold text-base tracking-tight text-white block leading-tight">
+                <span className="font-extrabold text-base tracking-wider text-white block leading-tight font-sans">
                   POLISI TARUNA
                 </span>
-                <span className="text-xs text-amber-400 font-semibold tracking-wider block">
+                <span className="text-xs text-amber-400 font-bold tracking-widest block font-mono">
                   SMKN 2 DEPOK
                 </span>
               </div>
             </div>
-            <p className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-sm">
+            <p className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-md font-normal">
               Korps penegak kedisiplinan, pembinaan jasmani, serta pembentukan karakter taruna/taruni yang
               berintegritas, tangguh, dan berwibawa di lingkungan SMKN 2 Kota Depok.
             </p>
@@ -35,7 +35,7 @@ export default function Footer() {
                 href="https://instagram.com/poltar2depok"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-rose-500/15 border border-white/10 hover:border-rose-500/40 text-slate-300 hover:text-white transition-all text-xs font-medium group"
+                className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-rose-500/15 border border-white/10 hover:border-rose-500/40 text-slate-300 hover:text-white transition-all text-xs font-semibold group shadow-lg shadow-black/40"
               >
                 <svg
                   className="w-4 h-4 text-rose-400 fill-current group-hover:scale-110 transition-transform"
@@ -51,8 +51,8 @@ export default function Footer() {
           </div>
 
           {/* Col 2: Quick Links (Tautan Cepat) */}
-          <div className="md:col-span-3 space-y-3 text-left">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-1.5">
+          <div className="lg:col-span-3 space-y-3.5 text-left">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2">
               <svg className="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -63,11 +63,11 @@ export default function Footer() {
               </svg>
               <span>Tautan Cepat</span>
             </h4>
-            <ul className="space-y-1.5 text-xs text-slate-400">
+            <ul className="space-y-2 text-xs text-slate-400">
               <li>
                 <a
                   href="#hero"
-                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-1.5 py-0.5 group"
+                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-2 py-0.5 group"
                 >
                   <span className="text-rose-500/70 group-hover:text-rose-400 group-hover:translate-x-1 transition-transform font-mono text-sm leading-none">
                     &rsaquo;
@@ -78,7 +78,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#about"
-                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-1.5 py-0.5 group"
+                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-2 py-0.5 group"
                 >
                   <span className="text-rose-500/70 group-hover:text-rose-400 group-hover:translate-x-1 transition-transform font-mono text-sm leading-none">
                     &rsaquo;
@@ -89,7 +89,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#visimisi"
-                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-1.5 py-0.5 group"
+                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-2 py-0.5 group"
                 >
                   <span className="text-rose-500/70 group-hover:text-rose-400 group-hover:translate-x-1 transition-transform font-mono text-sm leading-none">
                     &rsaquo;
@@ -100,7 +100,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#struktur"
-                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-1.5 py-0.5 group"
+                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-2 py-0.5 group"
                 >
                   <span className="text-rose-500/70 group-hover:text-rose-400 group-hover:translate-x-1 transition-transform font-mono text-sm leading-none">
                     &rsaquo;
@@ -111,7 +111,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#tugas"
-                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-1.5 py-0.5 group"
+                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-2 py-0.5 group"
                 >
                   <span className="text-rose-500/70 group-hover:text-rose-400 group-hover:translate-x-1 transition-transform font-mono text-sm leading-none">
                     &rsaquo;
@@ -122,7 +122,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#kegiatan"
-                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-1.5 py-0.5 group"
+                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-2 py-0.5 group"
                 >
                   <span className="text-rose-500/70 group-hover:text-rose-400 group-hover:translate-x-1 transition-transform font-mono text-sm leading-none">
                     &rsaquo;
@@ -133,7 +133,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#kontak"
-                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-1.5 py-0.5 group"
+                  className="hover:text-rose-400 transition-colors inline-flex items-center gap-2 py-0.5 group"
                 >
                   <span className="text-rose-500/70 group-hover:text-rose-400 group-hover:translate-x-1 transition-transform font-mono text-sm leading-none">
                     &rsaquo;
@@ -145,8 +145,8 @@ export default function Footer() {
           </div>
 
           {/* Col 3: Contact & Address (Sekretariat & Lokasi) */}
-          <div className="md:col-span-4 space-y-3 text-left">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-1.5">
+          <div className="lg:col-span-4 space-y-3.5 text-left">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2">
               <svg className="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -158,10 +158,10 @@ export default function Footer() {
               </svg>
               <span>Sekretariat &amp; Lokasi</span>
             </h4>
-            <div className="space-y-2.5 text-xs text-slate-400 leading-relaxed">
-              <div className="flex items-start gap-2.5">
-                <div className="w-6 h-6 rounded-md bg-amber-500/10 text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5 border border-amber-500/20">
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="space-y-3 text-xs text-slate-400 leading-relaxed">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5 border border-amber-500/20">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -175,9 +175,9 @@ export default function Footer() {
                   16517
                 </span>
               </div>
-              <div className="flex items-center gap-2.5">
-                <div className="w-6 h-6 rounded-md bg-white/5 text-slate-300 flex items-center justify-center flex-shrink-0 border border-white/10">
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                <div className="w-7 h-7 rounded-lg bg-white/5 text-slate-300 flex items-center justify-center flex-shrink-0 border border-white/10">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -188,12 +188,12 @@ export default function Footer() {
                 </div>
                 <span>Senin &ndash; Jumat, 06.15 &ndash; 16.00 WIB</span>
               </div>
-              <div className="pt-1.5">
+              <div className="pt-1">
                 <a
                   href="https://maps.google.com/?q=SMKN+2+Depok"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 hover:text-amber-200 transition text-[11px] font-semibold group shadow-sm"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 hover:text-amber-200 transition text-[11px] font-semibold group shadow-sm"
                 >
                   <svg
                     className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform"

@@ -138,20 +138,20 @@ export default function Pengaduan() {
   };
 
   return (
-    <section id="kontak" className="py-16 border-t border-white/5">
-      <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
-        <div className="text-center max-w-2xl mx-auto mb-10">
+    <section id="kontak" className="py-20 sm:py-24 border-t border-white/5 relative overflow-hidden bg-[#050811]/60">
+      <div className="container mx-auto px-4 sm:px-6 max-w-5xl relative z-10">
+        <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16">
           <div className="badge-pill mb-3">Layanan Informasi</div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+          <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
             Layanan Pengaduan &amp; Lacak Tiket
           </h2>
-          <p className="text-slate-400 text-xs sm:text-sm mt-2">
+          <p className="text-slate-400 text-xs sm:text-sm mt-2.5 leading-relaxed">
             Sampaikan masukan, laporan tata tertib, atau periksa perkembangan aduan Anda dengan aman dan
             mudah.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           {/* FORM LAPORAN */}
           <div className="glass-card p-6">
             <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/10">
