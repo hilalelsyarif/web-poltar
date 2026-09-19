@@ -191,4 +191,59 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    // 7. FITUR UBAH PASSWORD ADMIN
+    public function changePassword(Request $request)
+    {
+        // Support field aliases for flexible payload format
+        if ($request->has('current_password') && !$request->has('old_password')) {
+            $request->merge(['old_password' => $request->current_password]);
+        } elseif ($request->has('old_password') && !$request->has('current_password')) {
+            $request->merge(['current_password' => $request->old_password]);
+        }
+
+        if ($request->has('confirm_password') && !$request->has('new_password_confirmation')) {
+            $request->merge(['new_password_confirmation' => $request->confirm_password]);
+        } elseif ($request->has('password_confirmation') && !$request->has('new_password_confirmation')) {
+            $request->merge(['new_password_confirmation' => $request->password_confirmation]);
+        }
+
+        $request->validate([
+            'current_password'          => 'required|string',
+            'new_password'              => 'required|string|min:6|confirmed',
+            'new_password_confirmation' => 'required|string',
+        ], [
+            'current_password.required'          => 'Password saat ini wajib diisi!',
+            'new_password.required'              => 'Password baru wajib diisi!',
+            'new_password.min'                   => 'Password baru minimal 6 karakter!',
+            'new_password.confirmed'             => 'Konfirmasi password baru tidak cocok!',
+            'new_password_confirmation.required' => 'Konfirmasi password baru wajib diisi!',
+        ]);
+
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sesi tidak valid atau pengguna belum login!'
+            ], 401);
+        }
+
+        // Verifikasi password saat ini
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Password saat ini yang Anda masukkan salah!'
+            ], 422);
+        }
+
+        // Simpan password baru yang telah di-hash
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password administrator berhasil diperbarui!'
+        ]);
+    }
 }

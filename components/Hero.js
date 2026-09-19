@@ -10,7 +10,7 @@ export default function Hero({ onOpenModal }) {
       <div className="container mx-auto max-w-6xl relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           {/* Left: Hero Headline & Description */}
-          <div className="lg:col-span-6 space-y-6 text-left">
+          <div className="lg:col-span-6 space-y-6 text-left" data-aos="fade-up">
             <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-rose-950/60 to-slate-900/80 border border-rose-500/30 text-rose-300 text-xs font-bold tracking-wide shadow-lg shadow-rose-950/40 backdrop-blur-md">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
@@ -53,7 +53,7 @@ export default function Hero({ onOpenModal }) {
           </div>
 
           {/* Right: High Quality Team Photo Showcase */}
-          <div className="lg:col-span-6">
+          <div className="lg:col-span-6" data-aos="fade-up" data-aos-delay="200">
             <div
               className="group relative cursor-pointer rounded-2xl overflow-hidden border border-white/15 bg-slate-900/60 shadow-2xl shadow-black/80 transition-all duration-500 hover:border-rose-500/40 hover:shadow-rose-950/30"
               onClick={() => onOpenModal && onOpenModal("/images/allanggota.jpg")}
@@ -87,7 +87,7 @@ export default function Hero({ onOpenModal }) {
 
         {/* 3 Ringkasan Nilai Utama */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-16 sm:mt-20">
-          <div className="glass-card p-6 sm:p-7 hover:border-rose-500/30 group">
+          <div className="glass-card p-6 sm:p-7 hover:border-rose-500/30 group" data-aos="fade-up" data-aos-delay="100">
             <div className="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-rose-500/20 transition-all duration-300 shadow-lg shadow-rose-950/20">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -107,7 +107,7 @@ export default function Hero({ onOpenModal }) {
             </p>
           </div>
 
-          <div className="glass-card p-6 sm:p-7 hover:border-amber-500/30 group">
+          <div className="glass-card p-6 sm:p-7 hover:border-amber-500/30 group" data-aos="fade-up" data-aos-delay="200">
             <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-400 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-amber-500/20 transition-all duration-300 shadow-lg shadow-amber-950/20">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -127,7 +127,7 @@ export default function Hero({ onOpenModal }) {
             </p>
           </div>
 
-          <div className="glass-card p-6 sm:p-7 hover:border-blue-500/30 group">
+          <div className="glass-card p-6 sm:p-7 hover:border-blue-500/30 group" data-aos="fade-up" data-aos-delay="300">
             <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/25 text-blue-400 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-500/20 transition-all duration-300 shadow-lg shadow-blue-950/20">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path

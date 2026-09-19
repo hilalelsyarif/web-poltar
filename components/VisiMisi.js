@@ -6,7 +6,7 @@ export default function VisiMisi() {
       <div className="absolute top-1/2 right-10 -translate-y-1/2 w-80 h-80 bg-amber-500/5 blur-[100px] pointer-events-none rounded-full" />
 
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16" data-aos="fade-up">
           <div className="badge-pill mb-3">Visi &amp; Misi</div>
           <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">Arah &amp; Komitmen</h2>
           <p className="text-slate-400 text-xs sm:text-sm mt-2.5 leading-relaxed">
@@ -16,10 +16,10 @@ export default function VisiMisi() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch">
           {/* VISI CARD */}
-          <div className="glass-card relative overflow-hidden p-7 sm:p-10 flex flex-col justify-between group hover:border-rose-500/40 hover:shadow-2xl hover:shadow-rose-950/20 transition-all duration-300">
+          <div className="glass-card relative overflow-hidden p-7 sm:p-10 flex flex-col justify-between group hover:border-rose-500/40 hover:shadow-2xl hover:shadow-rose-950/20 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
             {/* Top Accent Line */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 via-rose-400 to-transparent" />
-            
+
             <div>
               <div className="flex items-center justify-between gap-4 mb-6">
                 <div className="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 flex items-center justify-center group-hover:scale-110 group-hover:bg-rose-500/20 transition-all duration-300 shadow-lg shadow-rose-950/20">
@@ -57,7 +57,7 @@ export default function VisiMisi() {
           </div>
 
           {/* MISI CARD */}
-          <div className="glass-card relative overflow-hidden p-7 sm:p-10 flex flex-col justify-between group hover:border-amber-500/40 hover:shadow-2xl hover:shadow-amber-950/20 transition-all duration-300">
+          <div className="glass-card relative overflow-hidden p-7 sm:p-10 flex flex-col justify-between group hover:border-amber-500/40 hover:shadow-2xl hover:shadow-amber-950/20 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
             {/* Top Accent Line */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-amber-400 to-transparent" />
 

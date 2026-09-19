@@ -75,4 +75,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         }
         return response()->json(['success' => false, 'message' => 'Tiket tidak ditemukan'], 404);
     });
+
+    // 3. Ubah Password Admin
+    Route::post('/admin/change-password', [AuthController::class, 'changePassword']);
 });

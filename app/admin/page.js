@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getBackendBase } from "@/lib/config";
 import { getDefaultPengurusFlatList } from "@/data/pengurusData";
+import AdminChangePassword from "@/components/AdminChangePassword";
 
 export default function AdminPage() {
   const router = useRouter();
@@ -270,7 +271,7 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="ambient-bg text-slate-100 p-4 sm:p-6 min-h-screen">
+    <div className="text-slate-100 p-4 sm:p-6 min-h-screen">
       <div className="max-w-6xl mx-auto space-y-6 my-2">
         {/* Header */}
         <header className="flex flex-wrap gap-4 justify-between items-center glass-card p-5">
@@ -302,6 +303,15 @@ export default function AdminPage() {
               </svg>
               <span>Beranda Utama</span>
             </Link>
+            <a
+              href="#ubah-password"
+              className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-2 rounded-lg transition inline-flex items-center gap-1.5 cursor-pointer font-medium"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <span>Ubah Password</span>
+            </a>
             <button
               onClick={() => {
                 loadReports();
@@ -696,6 +706,16 @@ export default function AdminPage() {
             );
           })()}
         </div>
+
+        {/* Section 4: Fitur Ubah Password Administrator */}
+        <AdminChangePassword
+          token={token}
+          onSessionExpired={() => {
+            localStorage.removeItem("auth_token");
+            localStorage.removeItem("user_role");
+            router.push("/login");
+          }}
+        />
 
         {/* Modal Edit Personel & Upload Foto */}
         {editingPerson && (

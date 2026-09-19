@@ -4,7 +4,7 @@ export default function Kegiatan({ onOpenModal }) {
   return (
     <section id="kegiatan" className="py-20 sm:py-24 border-t border-white/5 relative overflow-hidden bg-[#050811]/40">
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16" data-aos="fade-up">
           <div className="badge-pill mb-3">Galeri &amp; Dokumentasi</div>
           <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">Dokumentasi Kegiatan</h2>
           <p className="text-slate-400 text-xs sm:text-sm mt-2.5 leading-relaxed">
@@ -16,6 +16,8 @@ export default function Kegiatan({ onOpenModal }) {
           {/* DOK 1 */}
           <div
             className="glass-card relative overflow-hidden rounded-2xl cursor-pointer group hover:border-rose-500/40 hover:shadow-2xl hover:shadow-rose-950/20 transition-all duration-300"
+            data-aos="fade-up"
+            data-aos-delay="100"
             onClick={() => onOpenModal && onOpenModal("/images/PBB.jpg")}
           >
             <div className="h-72 overflow-hidden relative">
@@ -42,6 +44,8 @@ export default function Kegiatan({ onOpenModal }) {
           {/* DOK 2 */}
           <div
             className="glass-card relative overflow-hidden rounded-2xl cursor-pointer group hover:border-amber-500/40 hover:shadow-2xl hover:shadow-amber-950/20 transition-all duration-300"
+            data-aos="fade-up"
+            data-aos-delay="200"
             onClick={() => onOpenModal && onOpenModal("/images/binsik.jpg")}
           >
             <div className="h-72 overflow-hidden relative">

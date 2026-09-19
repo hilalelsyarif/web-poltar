@@ -133,7 +133,7 @@ export default function Pengaduan() {
   return (
     <section id="kontak" className="py-20 sm:py-24 border-t border-white/5 relative overflow-hidden bg-[#050811]/60">
       <div className="container mx-auto px-4 sm:px-6 max-w-5xl relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16" data-aos="fade-up">
           <div className="badge-pill mb-3">Layanan Informasi</div>
           <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
             Layanan Pengaduan &amp; Lacak Tiket
@@ -146,7 +146,7 @@ export default function Pengaduan() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           {/* FORM LAPORAN */}
-          <div className="glass-card p-6">
+          <div className="glass-card p-6" data-aos="fade-up" data-aos-delay="100">
             <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/10">
               <div className="w-8 h-8 rounded-md bg-rose-500/10 text-rose-400 flex items-center justify-center">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -246,7 +246,7 @@ export default function Pengaduan() {
           </div>
 
           {/* CEK STATUS TIKET */}
-          <div className="glass-card p-6 flex flex-col justify-between h-full">
+          <div className="glass-card p-6 flex flex-col justify-between h-full" data-aos="fade-up" data-aos-delay="200">
             <div>
               <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/10">
                 <div className="w-8 h-8 rounded-md bg-amber-500/10 text-amber-400 flex items-center justify-center">
@@ -344,7 +344,7 @@ export default function Pengaduan() {
         </div>
 
         {/* RIWAYAT LAPORAN SAYA */}
-        <div className="glass-card p-6">
+        <div className="glass-card p-6" data-aos="fade-up">
           <div className="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
             <h3 className="text-sm font-bold text-white">Riwayat Aduan Saya</h3>
             <span className="text-[11px] text-slate-400">Khusus akun yang telah masuk</span>

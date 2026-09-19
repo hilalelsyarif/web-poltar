@@ -42,6 +42,13 @@
                     </svg>
                     <span>Beranda Utama</span>
                 </a>
+                <a href="#ubah-password"
+                    class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-2 rounded-lg transition inline-flex items-center gap-1.5 cursor-pointer font-medium">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>Ubah Password</span>
+                </a>
                 <button onclick="loadReports(); loadStructures();"
                     class="bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 px-3 py-2 rounded-lg transition inline-flex items-center gap-1.5 cursor-pointer">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,6 +179,65 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <!-- Section 4: Fitur Ubah Password Administrator -->
+        <div id="ubah-password" class="glass-card p-6 scroll-mt-6">
+            <div class="flex items-center justify-between gap-3 mb-5 pb-3 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-bold text-white tracking-wide">Ubah Password Administrator</h2>
+                        <p class="text-[11px] text-slate-400">Perbarui kata sandi akun admin untuk menjaga keamanan akses panel</p>
+                    </div>
+                </div>
+            </div>
+
+            <form id="formChangePassword" onsubmit="handleChangePassword(event)" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div>
+                        <label class="block text-slate-300 mb-1.5 font-medium">
+                            Password Saat Ini <span class="text-rose-400">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="cp_current" required class="form-control pr-10" placeholder="Masukkan password saat ini..." autocomplete="current-password">
+                            <button type="button" onclick="togglePasswordVisibility('cp_current', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs p-1" aria-label="Toggle password">🙈</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1.5 font-medium">
+                            Password Baru <span class="text-rose-400">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="cp_new" required minlength="6" class="form-control pr-10" placeholder="Minimal 6 karakter..." autocomplete="new-password">
+                            <button type="button" onclick="togglePasswordVisibility('cp_new', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs p-1" aria-label="Toggle password">🙈</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1.5 font-medium">
+                            Konfirmasi Password Baru <span class="text-rose-400">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="cp_confirm" required minlength="6" class="form-control pr-10" placeholder="Ulangi password baru..." autocomplete="new-password">
+                            <button type="button" onclick="togglePasswordVisibility('cp_confirm', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs p-1" aria-label="Toggle password">🙈</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-2 border-t border-white/5">
+                    <p class="text-[11px] text-slate-400">Pastikan password baru Anda kuat dan belum pernah digunakan sebelumnya.</p>
+                    <button type="submit" id="btnSubmitCP" class="btn-primary !text-xs !py-2 !px-4 inline-flex items-center gap-2 cursor-pointer">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>Perbarui Password</span>
+                    </button>
+                </div>
+            </form>
         </div>
 
     </div>
@@ -452,6 +518,121 @@
                     }
                 }
             });
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            if (input.type === "password") {
+                input.type = "text";
+                btn.textContent = "👁️";
+            } else {
+                input.type = "password";
+                btn.textContent = "🙈";
+            }
+        }
+
+        async function handleChangePassword(e) {
+            e.preventDefault();
+            const currentPassword = document.getElementById('cp_current').value;
+            const newPassword = document.getElementById('cp_new').value;
+            const confirmPassword = document.getElementById('cp_confirm').value;
+
+            if (newPassword.length < 6) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Password Terlalu Pendek',
+                    text: 'Password baru harus memiliki minimal 6 karakter.',
+                    background: '#0f172a',
+                    color: '#f8fafc',
+                    confirmButtonColor: '#e11d48'
+                });
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Password Tidak Cocok',
+                    text: 'Konfirmasi password baru tidak cocok dengan password baru.',
+                    background: '#0f172a',
+                    color: '#f8fafc',
+                    confirmButtonColor: '#e11d48'
+                });
+                return;
+            }
+
+            const btn = document.getElementById('btnSubmitCP');
+            btn.disabled = true;
+            btn.innerHTML = '<span>Menyimpan...</span>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/change-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword,
+                        new_password_confirmation: confirmPassword
+                    })
+                });
+
+                const resData = await response.json();
+
+                if (response.status === 401) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Sesi Kedaluwarsa',
+                        text: 'Silakan login kembali.',
+                        background: '#0f172a',
+                        color: '#f8fafc',
+                        confirmButtonColor: '#e11d48'
+                    }).then(() => {
+                        localStorage.removeItem('auth_token');
+                        localStorage.removeItem('user_role');
+                        window.location.href = 'login.html';
+                    });
+                    return;
+                }
+
+                if (response.ok && resData.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: resData.message || 'Password Administrator berhasil diperbarui!',
+                        background: '#0f172a',
+                        color: '#f8fafc',
+                        confirmButtonColor: '#e11d48'
+                    });
+                    document.getElementById('formChangePassword').reset();
+                } else {
+                    const errMsg = resData.message || (resData.errors && Object.values(resData.errors).flat().join(' ')) || 'Gagal mengubah password.';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: errMsg,
+                        background: '#0f172a',
+                        color: '#f8fafc',
+                        confirmButtonColor: '#e11d48'
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan Jaringan',
+                    text: 'Terjadi kesalahan komunikasi dengan server backend.',
+                    background: '#0f172a',
+                    color: '#f8fafc',
+                    confirmButtonColor: '#e11d48'
+                });
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span>Perbarui Password</span>';
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {

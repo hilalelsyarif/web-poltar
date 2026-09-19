@@ -10,7 +10,7 @@ export default function TugasPokok() {
       ></div>
 
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16" data-aos="fade-up">
           <div className="badge-pill mb-3 inline-flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
             <span>Tugas &amp; Tanggung Jawab</span>
@@ -25,7 +25,7 @@ export default function TugasPokok() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           {/* TUGAS 1: Gerakan Disiplin Taruna */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0c1428]/90 via-[#0a1020]/95 to-[#070c18]/95 border border-white/10 hover:border-rose-500/40 p-6 sm:p-8 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-rose-950/20 group flex flex-col justify-between">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0c1428]/90 via-[#0a1020]/95 to-[#070c18]/95 border border-white/10 hover:border-rose-500/40 p-6 sm:p-8 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-rose-950/20 group flex flex-col justify-between" data-aos="fade-up" data-aos-delay="100">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 via-rose-400 to-transparent" />
 
             <div>
@@ -86,7 +86,7 @@ export default function TugasPokok() {
           </div>
 
           {/* TUGAS 2: Patroli & Ketertiban Area */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0c1428]/90 via-[#0a1020]/95 to-[#070c18]/95 border border-white/10 hover:border-amber-500/40 p-6 sm:p-8 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-amber-950/20 group flex flex-col justify-between">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0c1428]/90 via-[#0a1020]/95 to-[#070c18]/95 border border-white/10 hover:border-amber-500/40 p-6 sm:p-8 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-amber-950/20 group flex flex-col justify-between" data-aos="fade-up" data-aos-delay="200">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-amber-400 to-transparent" />
 
             <div>
@@ -151,7 +151,7 @@ export default function TugasPokok() {
           </div>
 
           {/* TUGAS 3: Pengawalan Upacara & Apel */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0c1428]/90 via-[#0a1020]/95 to-[#070c18]/95 border border-white/10 hover:border-blue-500/40 p-6 sm:p-8 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-blue-950/20 group flex flex-col justify-between">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0c1428]/90 via-[#0a1020]/95 to-[#070c18]/95 border border-white/10 hover:border-blue-500/40 p-6 sm:p-8 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-blue-950/20 group flex flex-col justify-between" data-aos="fade-up" data-aos-delay="100">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-blue-400 to-transparent" />
 
             <div>
@@ -213,7 +213,7 @@ export default function TugasPokok() {
           </div>
 
           {/* TUGAS 4: Pembinaan Karakter & Jasmani */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0c1428]/90 via-[#0a1020]/95 to-[#070c18]/95 border border-white/10 hover:border-purple-500/40 p-6 sm:p-8 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-purple-950/20 group flex flex-col justify-between">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0c1428]/90 via-[#0a1020]/95 to-[#070c18]/95 border border-white/10 hover:border-purple-500/40 p-6 sm:p-8 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-purple-950/20 group flex flex-col justify-between" data-aos="fade-up" data-aos-delay="200">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-purple-400 to-transparent" />
 
             <div>

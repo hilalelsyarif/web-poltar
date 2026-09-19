@@ -253,7 +253,7 @@ export default function StrukturOrg() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
+        <div className="text-center max-w-3xl mx-auto mb-12" data-aos="fade-up">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold uppercase tracking-wider mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
             Struktur Organisasi
@@ -288,7 +288,7 @@ export default function StrukturOrg() {
         {/* ======================================================== */}
         {/* 1. PIMPINAN KOMANDO (Wadanpol 1, Danpol, Wadanpol 2)     */}
         {/* ======================================================== */}
-        <div className="mb-14">
+        <div className="mb-14" data-aos="fade-up">
           <div className="flex items-center justify-center gap-3 mb-8">
             <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-amber-500/40" />
             <h3 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-amber-400 flex items-center gap-2">
@@ -390,7 +390,7 @@ export default function StrukturOrg() {
         {/* ======================================================== */}
         {/* 2. PENEGAK KEDISIPLINAN TARUNA (PKT)                     */}
         {/* ======================================================== */}
-        <div className="mb-14">
+        <div className="mb-14" data-aos="fade-up">
           <div className="flex items-center justify-center gap-3 mb-8">
             <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-sky-500/40" />
             <h3 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-sky-400 flex items-center gap-2">
@@ -478,7 +478,7 @@ export default function StrukturOrg() {
         {/* ======================================================== */}
         {/* 3. SEKRETARIS & BENDAHARA                                */}
         {/* ======================================================== */}
-        <div className="mb-14">
+        <div className="mb-14" data-aos="fade-up">
           <div className="flex items-center justify-center gap-3 mb-8">
             <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-emerald-500/40" />
             <h3 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-emerald-400 flex items-center gap-2">
@@ -545,7 +545,7 @@ export default function StrukturOrg() {
         {/* ======================================================== */}
         {/* 4. DIVISI OPERASIONAL (TIK, Jasmani, Humas, Linmas)      */}
         {/* ======================================================== */}
-        <div className="mb-14">
+        <div className="mb-14" data-aos="fade-up">
           <div className="flex items-center justify-center gap-3 mb-8">
             <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-purple-500/40" />
             <h3 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-purple-400 flex items-center gap-2">
@@ -613,7 +613,7 @@ export default function StrukturOrg() {
         {/* 5. ANGGOTA (Khusus Angkatan 18 & 19)                      */}
         {/* ======================================================== */}
         {isAkt18Or19 && anggotaList.length > 0 && (
-          <div className="mb-14">
+          <div className="mb-14" data-aos="fade-up">
             <div className="flex items-center justify-center gap-3 mb-8">
               <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-rose-500/40" />
               <h3 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-rose-400 flex items-center gap-2">

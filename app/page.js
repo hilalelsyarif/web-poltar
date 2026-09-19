@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
@@ -15,6 +17,14 @@ import ImageLightboxModal from "@/components/ImageLightboxModal";
 export default function Home() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImg, setLightboxImg] = useState("");
+
+  useEffect(() => {
+    AOS.init({
+      duration: 800, // durasi animasi (ms)
+      once: true,    // animasi hanya berjalan sekali saat di-scroll
+      easing: "ease-out-cubic",
+    });
+  }, []);
 
   const handleOpenModal = (imgSrc) => {
     setLightboxImg(imgSrc);

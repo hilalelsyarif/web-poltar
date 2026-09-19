@@ -40,6 +40,7 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
   background-color: var(--bg-dark);
   color: var(--text-primary);
 }
@@ -47,7 +48,6 @@ html {
 body {
   background-color: var(--bg-dark);
   color: var(--text-primary);
-  overflow-x: hidden;
   line-height: 1.6;
   letter-spacing: -0.01em;
 }
@@ -71,8 +71,18 @@ body {
   background: var(--accent-red);
 }
 
-/* Ambient Animated & Mesh Gradient Background */
+/* Ambient Background - Zero-Lag Dedicated GPU Fixed Plane */
 .ambient-bg {
+  position: relative;
+  background-color: #050811;
+}
+
+.ambient-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background-color: #050811;
   background-image: 
     radial-gradient(at 0% 0%, rgba(225, 29, 72, 0.14) 0px, transparent 45%),
@@ -80,7 +90,9 @@ body {
     radial-gradient(at 50% 50%, rgba(245, 158, 11, 0.06) 0px, transparent 50%),
     radial-gradient(at 85% 85%, rgba(225, 29, 72, 0.09) 0px, transparent 45%),
     radial-gradient(at 10% 90%, rgba(15, 23, 42, 0.7) 0px, transparent 55%);
-  background-attachment: fixed;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  will-change: transform;
 }
 
 /* Tactical Grid Overlay Background */
@@ -91,14 +103,14 @@ body {
     linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
 }
 
-/* Glassmorphism Cards */
+/* Glassmorphism Cards - High Performance Zero-Stutter */
 .glass-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(11, 18, 36, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .glass-card:hover {

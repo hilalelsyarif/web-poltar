@@ -2,7 +2,7 @@ export default function About() {
   return (
     <section id="about" className="py-20 sm:py-24 border-t border-white/5 relative overflow-hidden bg-[#050811]/40">
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16" data-aos="fade-up">
           <div className="badge-pill mb-3">Profil Organisasi</div>
           <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">Tentang Polisi Taruna</h2>
           <p className="text-slate-400 text-xs sm:text-sm mt-2.5 leading-relaxed">
@@ -10,7 +10,7 @@ export default function About() {
           </p>
         </div>
 
-        <div className="glass-card relative overflow-hidden p-7 sm:p-12 border border-white/10 shadow-2xl hover:border-white/20 transition-all duration-300">
+        <div className="glass-card relative overflow-hidden p-7 sm:p-12 border border-white/10 shadow-2xl hover:border-white/20 transition-all duration-300" data-aos="fade-up" data-aos-delay="150">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
             <div className="md:col-span-4 flex justify-center">
               <div className="p-5 bg-[#060a14] rounded-2xl border border-white/15 shadow-2xl relative group">
