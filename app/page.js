@@ -18,6 +18,29 @@ export default function Home() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImg, setLightboxImg] = useState("");
 
+  // Tangkap token dari Google OAuth callback (?token=...&role=...&name=...)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+      const role = params.get("role");
+      const name = params.get("name");
+
+      if (token) {
+        localStorage.setItem("auth_token", token);
+        if (name) localStorage.setItem("user_name", name);
+        if (role) localStorage.setItem("user_role", role);
+
+        // Bersihkan query params dari URL tanpa reload
+        const cleanUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+
+        // Force re-render komponen agar Pengaduan mendeteksi login
+        window.dispatchEvent(new Event("storage"));
+      }
+    }
+  }, []);
+
   useEffect(() => {
     AOS.init({
       duration: 800, // durasi animasi (ms)

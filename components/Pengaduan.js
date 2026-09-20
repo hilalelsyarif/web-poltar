@@ -23,11 +23,19 @@ export default function Pengaduan() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("auth_token");
-    if (token) {
-      setIsLoggedIn(true);
-      fetchMyReports(token);
-    }
+    const checkLogin = () => {
+      const token = localStorage.getItem("auth_token");
+      if (token) {
+        setIsLoggedIn(true);
+        fetchMyReports(token);
+      }
+    };
+
+    checkLogin();
+
+    // Listen untuk event storage (dipicu setelah Google OAuth callback menyimpan token)
+    window.addEventListener("storage", checkLogin);
+    return () => window.removeEventListener("storage", checkLogin);
   }, []);
 
   const fetchMyReports = async (token) => {
