@@ -20,7 +20,7 @@ export default function Navbar() {
     }
 
     // Scrollspy & Scroll blur
-    const navSections = ["hero", "about", "visimisi", "struktur", "tugas", "kegiatan", "kontak"];
+    const navSections = ["hero", "about", "wajib-poltar", "struktur", "tugas", "kegiatan", "kontak"];
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
 
@@ -98,9 +98,9 @@ export default function Navbar() {
                 className="h-6 sm:h-7 w-auto mix-blend-screen hidden sm:block"
               />
               <img
-                src="/images/logopoltar.jpg"
+                src="/logo-poltar.png"
                 alt="Logo Polisi Taruna"
-                className="h-6 sm:h-7 w-auto mix-blend-screen hidden sm:block"
+                className="h-6 sm:h-7 w-auto hidden sm:block"
               />
             </div>
 
@@ -129,10 +129,10 @@ export default function Navbar() {
               Profil
             </a>
             <a
-              href="#visimisi"
-              className={`nav-link ${activeNav === "visimisi" ? "nav-active text-white" : "text-slate-300"}`}
+              href="#wajib-poltar"
+              className={`nav-link ${activeNav === "wajib-poltar" ? "nav-active text-white" : "text-slate-300"}`}
             >
-              Visi &amp; Misi
+              8 Wajib &amp; Janji
             </a>
             <a
               href="#struktur"
@@ -239,9 +239,9 @@ export default function Navbar() {
         <div className="flex items-center justify-between gap-2 px-4 sm:px-5 py-4 border-b border-white/10 flex-shrink-0">
           <div className="flex items-center gap-2 min-w-0">
             <img
-              src="/images/logopoltar.jpg"
+              src="/logo-poltar.png"
               alt="Logo Polisi Taruna"
-              className="h-9 w-9 rounded-lg object-cover flex-shrink-0 border border-white/10"
+              className="h-9 w-9 rounded-lg object-contain flex-shrink-0"
             />
             <div className="min-w-0">
               <span className="font-bold text-sm text-white block leading-tight truncate">
@@ -296,19 +296,19 @@ export default function Navbar() {
             <span>Profil</span>
           </a>
           <a
-            href="#visimisi"
+            href="#wajib-poltar"
             onClick={() => setSidebarOpen(false)}
-            className={`nav-link sidebar-link ${activeNav === "visimisi" ? "sidebar-active" : ""}`}
+            className={`nav-link sidebar-link ${activeNav === "wajib-poltar" ? "sidebar-active" : ""}`}
           >
             <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385m0-10A7.968 7.968 0 0114.5 4c1.255 0 2.443.29 3.5.804v10a7.968 7.968 0 00-3.5-.804c-1.669 0-3.218.51-4.5 1.385"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
               />
             </svg>
-            <span>Visi &amp; Misi</span>
+            <span>8 Wajib &amp; Janji</span>
           </a>
           <a
             href="#struktur"

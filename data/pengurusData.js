@@ -18,6 +18,147 @@ const createAngkatanData = (gen) => {
   const isAkt22 = genNum === 22;
   const isAkt18Or19 = genNum === 18 || genNum === 19;
 
+  // Khusus Angkatan 22 (Data Personel Resmi)
+  if (isAkt22) {
+    return {
+      pimpinan: [
+        {
+          id: "gen-22-wadanki1",
+          name: "Rasya Walisyani",
+          position: "Wadanki 1",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-danki",
+          name: "M. Bagas Alghifari",
+          position: "Danki",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-wadanki2",
+          name: "Nurul Hafidz",
+          position: "Wadanki 2",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+      ],
+      pkt: [
+        {
+          id: "gen-22-ketua-pkt",
+          name: "Arifianto Ilham",
+          position: "Ketua PKT",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-pkt-1",
+          name: "Hilal El Syarif",
+          position: "PKT",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-pkt-2",
+          name: "Ramadhan Jothi",
+          position: "PKT",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+      ],
+      sekretarisBendahara: [
+        {
+          id: "gen-22-sekretaris-1",
+          name: "Keysha Adinda N",
+          position: "Sekretaris",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-sekretaris-2",
+          name: "Masayu Queensha",
+          position: "Sekretaris",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-bendahara-1",
+          name: "Aryabima Suyatna",
+          position: "Bendahara",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-bendahara-2",
+          name: "Djessica Putri",
+          position: "Bendahara",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+      ],
+      divisiOperasional: [
+        {
+          id: "gen-22-tik-1",
+          name: "Rendy Arifianto",
+          position: "TIK",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-tik-2",
+          name: "Jasmine Malika",
+          position: "TIK",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-tik-3",
+          name: "Syafa Annafi",
+          position: "TIK",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-jasmani-1",
+          name: "Abqary Muhammad",
+          position: "Jasmani",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-jasmani-2",
+          name: "Jonathyan Febrian",
+          position: "Jasmani",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-jasmani-3",
+          name: "Dimas Akbar",
+          position: "Jasmani",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-humas-1",
+          name: "Babyna Syasyabila",
+          position: "Humas",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+        {
+          id: "gen-22-humas-2",
+          name: "Kayla Satira",
+          position: "Humas",
+          generation: "22",
+          image: "/images/placeholder.jpg",
+        },
+      ],
+      anggota: [],
+    };
+  }
+
   // 1. Pimpinan Komando (Wadanpol/Wadanki 1 di kiri, Danpol/Danki di tengah, Wadanpol/Wadanki 2 di kanan)
   const pimpinan = isAkt22
     ? [

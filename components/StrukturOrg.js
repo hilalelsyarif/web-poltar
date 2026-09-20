@@ -7,9 +7,9 @@ import { getBackendBase } from "@/lib/config";
 
 export default function StrukturOrg() {
   const [isMounted, setIsMounted] = useState(false);
-  const [selectedGen, setSelectedGen] = useState("18");
+  const [selectedGen, setSelectedGen] = useState("22");
   const [activeModalPerson, setActiveModalPerson] = useState(null);
-  const [currentData, setCurrentData] = useState(pengurusData["18"]);
+  const [currentData, setCurrentData] = useState(pengurusData["22"]);
 
   // Set isMounted to true after client hydration completes
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function StrukturOrg() {
     if (!isMounted) return;
 
     let isSubscribed = true;
-    const localGenData = pengurusData[selectedGen] || pengurusData["18"];
+    const localGenData = pengurusData[selectedGen] || pengurusData["22"];
     setCurrentData(localGenData);
 
     async function syncBackendData() {
@@ -33,6 +33,16 @@ export default function StrukturOrg() {
 
         if (isSubscribed && json.success && Array.isArray(json.data) && json.data.length > 0) {
           const backendList = json.data;
+
+          // Jika untuk Angkatan 22 backend hanya mengembalikan template "Nama Personel", pertahankan data resmi
+          if (selectedGen === "22") {
+            const hasRealPersonnel = backendList.some(
+              (item) => item.name && item.name.trim().toLowerCase() !== "nama personel"
+            );
+            if (!hasRealPersonnel) {
+              return;
+            }
+          }
           const genNum = parseInt(selectedGen, 10);
           const isAkt18Or19 = genNum === 18 || genNum === 19;
 

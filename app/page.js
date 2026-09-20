@@ -6,7 +6,7 @@ import "aos/dist/aos.css";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
-import VisiMisi from "@/components/VisiMisi";
+import WajibJanjiPoltar from "@/components/WajibJanjiPoltar";
 import StrukturOrg from "@/components/StrukturOrg";
 import TugasPokok from "@/components/TugasPokok";
 import Kegiatan from "@/components/Kegiatan";
@@ -45,7 +45,7 @@ export default function Home() {
       <main>
         <Hero onOpenModal={handleOpenModal} />
         <About />
-        <VisiMisi />
+        <WajibJanjiPoltar />
         <StrukturOrg />
         <TugasPokok />
         <Kegiatan onOpenModal={handleOpenModal} />

@@ -15,7 +15,7 @@ export default function Footer() {
               <div className="flex items-center space-x-1.5 p-2 bg-gradient-to-r from-white/[0.08] to-white/[0.03] rounded-xl border border-white/15 shadow-inner">
                 <img src="/images/logodudep.jpg" alt="Logo SMKN 2 Depok" className="h-8 w-auto mix-blend-screen" />
                 <img src="/images/logokorps.jpg" alt="Korps Taruna" className="h-8 w-auto mix-blend-screen" />
-                <img src="/images/logopoltar.jpg" alt="Logo Polisi Taruna" className="h-8 w-auto mix-blend-screen" />
+                <img src="/logo-poltar.png" alt="Logo Polisi Taruna" className="h-8 w-auto" />
               </div>
               <div>
                 <span className="font-extrabold text-base tracking-wider text-white block leading-tight font-sans">
@@ -88,13 +88,13 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="#visimisi"
+                  href="#wajib-poltar"
                   className="hover:text-rose-400 transition-colors inline-flex items-center gap-2 py-0.5 group"
                 >
                   <span className="text-rose-500/70 group-hover:text-rose-400 group-hover:translate-x-1 transition-transform font-mono text-sm leading-none">
                     &rsaquo;
                   </span>
-                  <span>Visi &amp; Misi</span>
+                  <span>8 Wajib &amp; Janji Poltar</span>
                 </a>
               </li>
               <li>

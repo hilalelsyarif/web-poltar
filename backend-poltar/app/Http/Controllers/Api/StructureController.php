@@ -21,16 +21,44 @@ class StructureController extends Controller
 
         $items = [];
 
-        // 1. Pimpinan Komando
+        // Khusus Angkatan 22 (Data Personel Resmi)
         if ($isAkt22) {
-            $items[] = ['position' => 'Wadanki 1'];
-            $items[] = ['position' => 'Danki'];
-            $items[] = ['position' => 'Wadanki 2'];
-        } else {
-            $items[] = ['position' => 'Wadanpol 1'];
-            $items[] = ['position' => 'Danpol'];
-            $items[] = ['position' => 'Wadanpol 2'];
+            $akt22Items = [
+                ['name' => 'Rasya Walisyani', 'position' => 'Wadanki 1'],
+                ['name' => 'M. Bagas Alghifari', 'position' => 'Danki'],
+                ['name' => 'Nurul Hafidz', 'position' => 'Wadanki 2'],
+                ['name' => 'Arifianto Ilham', 'position' => 'Ketua PKT'],
+                ['name' => 'Hilal El Syarif', 'position' => 'PKT'],
+                ['name' => 'Ramadhan Jothi', 'position' => 'PKT'],
+                ['name' => 'Keysha Adinda N', 'position' => 'Sekretaris'],
+                ['name' => 'Masayu Queensha', 'position' => 'Sekretaris'],
+                ['name' => 'Aryabima Suyatna', 'position' => 'Bendahara'],
+                ['name' => 'Djessica Putri', 'position' => 'Bendahara'],
+                ['name' => 'Rendy Arifianto', 'position' => 'TIK'],
+                ['name' => 'Jasmine Malika', 'position' => 'TIK'],
+                ['name' => 'Syafa Annafi', 'position' => 'TIK'],
+                ['name' => 'Abqary Muhammad', 'position' => 'Jasmani'],
+                ['name' => 'Jonathyan Febrian', 'position' => 'Jasmani'],
+                ['name' => 'Dimas Akbar', 'position' => 'Jasmani'],
+                ['name' => 'Babyna Syasyabila', 'position' => 'Humas'],
+                ['name' => 'Kayla Satira', 'position' => 'Humas'],
+            ];
+
+            foreach ($akt22Items as $item) {
+                Structure::create([
+                    'name'       => $item['name'],
+                    'position'   => $item['position'],
+                    'generation' => (string) $gen,
+                    'image_path' => '',
+                ]);
+            }
+            return;
         }
+
+        // 1. Pimpinan Komando (Akt 18 - 21)
+        $items[] = ['position' => 'Wadanpol 1'];
+        $items[] = ['position' => 'Danpol'];
+        $items[] = ['position' => 'Wadanpol 2'];
 
         // 2. PKT (1 Ketua + 3 Anggota = 4 slot)
         $items[] = ['position' => 'Ketua PKT'];

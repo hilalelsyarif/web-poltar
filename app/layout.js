@@ -17,6 +17,14 @@ export const metadata = {
   title: "Polisi Taruna | SMKN 2 Depok",
   description:
     "Portal Resmi Korps Polisi Taruna (POLTAR) SMKN 2 Depok — Penegak kedisiplinan, ketertiban, dan pembinaan karakter taruna.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/logo-poltar.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/logo-poltar.png",
+  },
 };
 
 export default function RootLayout({ children }) {
