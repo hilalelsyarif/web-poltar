@@ -183,7 +183,7 @@ class AuthController extends Controller
             }
 
             $frontendUrl = rtrim($frontendUrl, '/');
-            return redirect("{$frontendUrl}/index.html?token={$token}&role={$user->role}&name=" . urlencode($user->name));
+            return redirect("{$frontendUrl}/?token={$token}&role={$user->role}&name=" . urlencode($user->name));
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false, 

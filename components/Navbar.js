@@ -10,6 +10,24 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
+    // Tangkap token & parameter hasil redirect Google OAuth jika ada
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlToken = urlParams.get("token");
+      const urlRole = urlParams.get("role");
+      const urlName = urlParams.get("name");
+
+      if (urlToken) {
+        localStorage.setItem("auth_token", urlToken);
+        if (urlRole) localStorage.setItem("user_role", urlRole);
+        if (urlName) localStorage.setItem("user_name", decodeURIComponent(urlName));
+
+        // Bersihkan query string di address bar agar URL kembali bersih
+        const cleanUrl = window.location.pathname + window.location.hash;
+        window.history.replaceState({}, document.title, cleanUrl || "/");
+      }
+    }
+
     // Read auth token & user from localStorage if present
     const token = localStorage.getItem("auth_token");
     const name = localStorage.getItem("user_name");
