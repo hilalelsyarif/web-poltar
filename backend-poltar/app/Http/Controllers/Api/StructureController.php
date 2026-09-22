@@ -60,7 +60,7 @@ class StructureController extends Controller
     }
 
     /**
-     * Auto-seed template pengurus bersih per angkatan
+     * Auto-seed template pengurus per angkatan jika data belum ada
      */
     private function seedDefaultsForGen(string $gen): void
     {
