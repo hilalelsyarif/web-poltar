@@ -77,7 +77,9 @@ class StructureController extends Controller
             ]);
 
             $imagePath = '';
-            if ($request->hasFile('image')) {
+            if ($request->filled('image_base64')) {
+                $imagePath = $request->input('image_base64');
+            } elseif ($request->hasFile('image')) {
                 $imageFile = $request->file('image');
                 if (!$imageFile->isValid()) {
                     return response()->json([
@@ -86,8 +88,6 @@ class StructureController extends Controller
                     ], 422);
                 }
                 $imagePath = $this->imageToBase64($imageFile);
-            } elseif ($request->filled('image_base64')) {
-                $imagePath = $request->input('image_base64');
             } elseif ($request->filled('image') && is_string($request->input('image')) && str_starts_with($request->input('image'), 'data:image')) {
                 $imagePath = $request->input('image');
             }
@@ -144,7 +144,9 @@ class StructureController extends Controller
                 $structure->generation = (string) $request->generation;
             }
 
-            if ($request->hasFile('image')) {
+            if ($request->filled('image_base64')) {
+                $structure->image_path = $request->input('image_base64');
+            } elseif ($request->hasFile('image')) {
                 $imageFile = $request->file('image');
                 if (!$imageFile->isValid()) {
                     return response()->json([
@@ -154,8 +156,6 @@ class StructureController extends Controller
                 }
                 // Konversi ke base64 data URL (tidak perlu filesystem)
                 $structure->image_path = $this->imageToBase64($imageFile);
-            } elseif ($request->filled('image_base64')) {
-                $structure->image_path = $request->input('image_base64');
             } elseif ($request->filled('image') && is_string($request->input('image')) && str_starts_with($request->input('image'), 'data:image')) {
                 $structure->image_path = $request->input('image');
             }
@@ -304,45 +304,62 @@ class StructureController extends Controller
      */
     private function imageToBase64($file, int $maxWidth = 400, int $quality = 70): string
     {
-        $mime = $file->getMimeType();
+        $mime = $file->getMimeType() ?: 'image/jpeg';
         $extension = strtolower($file->getClientOriginalExtension());
 
-        // Coba compress dengan GD jika tersedia
-        if (extension_loaded('gd')) {
+        // Coba compress dengan GD hanya jika semua fungsi GD yang diperlukan benar-benar ada
+        if (
+            extension_loaded('gd') &&
+            function_exists('imagecreatetruecolor') &&
+            function_exists('imagecopyresampled') &&
+            function_exists('imagejpeg') &&
+            function_exists('imagedestroy')
+        ) {
             $source = null;
-            if (in_array($extension, ['jpg', 'jpeg'])) {
-                $source = @imagecreatefromjpeg($file->getRealPath());
-            } elseif ($extension === 'png') {
-                $source = @imagecreatefrompng($file->getRealPath());
-            } elseif ($extension === 'webp') {
-                $source = @imagecreatefromwebp($file->getRealPath());
-            }
-
-            if ($source) {
-                $origW = imagesx($source);
-                $origH = imagesy($source);
-
-                // Resize jika terlalu besar
-                if ($origW > $maxWidth) {
-                    $newW = $maxWidth;
-                    $newH = (int) round($origH * ($maxWidth / $origW));
-                    $resized = imagecreatetruecolor($newW, $newH);
-                    imagecopyresampled($resized, $source, 0, 0, 0, 0, $newW, $newH, $origW, $origH);
-                    imagedestroy($source);
-                    $source = $resized;
+            try {
+                if (in_array($extension, ['jpg', 'jpeg']) && function_exists('imagecreatefromjpeg')) {
+                    $source = @\imagecreatefromjpeg($file->getRealPath());
+                } elseif ($extension === 'png' && function_exists('imagecreatefrompng')) {
+                    $source = @\imagecreatefrompng($file->getRealPath());
+                } elseif ($extension === 'webp' && function_exists('imagecreatefromwebp')) {
+                    $source = @\imagecreatefromwebp($file->getRealPath());
+                } elseif (function_exists('imagecreatefromstring')) {
+                    $raw = @file_get_contents($file->getRealPath());
+                    if ($raw !== false) {
+                        $source = @\imagecreatefromstring($raw);
+                    }
                 }
 
-                // Output sebagai JPEG compressed
-                ob_start();
-                imagejpeg($source, null, $quality);
-                $data = ob_get_clean();
-                imagedestroy($source);
+                if ($source) {
+                    $origW = \imagesx($source);
+                    $origH = \imagesy($source);
 
-                return 'data:image/jpeg;base64,' . base64_encode($data);
+                    // Resize jika terlalu besar
+                    if ($origW > $maxWidth) {
+                        $newW = $maxWidth;
+                        $newH = (int) round($origH * ($maxWidth / $origW));
+                        $resized = \imagecreatetruecolor($newW, $newH);
+                        \imagecopyresampled($resized, $source, 0, 0, 0, 0, $newW, $newH, $origW, $origH);
+                        \imagedestroy($source);
+                        $source = $resized;
+                    }
+
+                    // Output sebagai JPEG compressed
+                    ob_start();
+                    \imagejpeg($source, null, $quality);
+                    $data = ob_get_clean();
+                    \imagedestroy($source);
+
+                    if (!empty($data)) {
+                        return 'data:image/jpeg;base64,' . base64_encode($data);
+                    }
+                }
+            } catch (Throwable $e) {
+                // Abaikan error GD dan lanjutkan fallback ke base64 murni
             }
         }
 
-        // Fallback: raw base64 tanpa compression
+        // Fallback: raw base64 tanpa server-side GD
         $data = file_get_contents($file->getRealPath());
         return 'data:' . $mime . ';base64,' . base64_encode($data);
     }

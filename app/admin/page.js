@@ -190,6 +190,15 @@ export default function AdminPage() {
     if (structImage) {
       const processedImage = await compressImageClientSide(structImage);
       formData.append("image", processedImage);
+      const base64Str = await new Promise((resolve) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result);
+        r.onerror = () => resolve("");
+        r.readAsDataURL(processedImage);
+      });
+      if (base64Str) {
+        formData.append("image_base64", base64Str);
+      }
     }
 
     try {
@@ -247,6 +256,15 @@ export default function AdminPage() {
     if (editImage) {
       const processedImage = await compressImageClientSide(editImage);
       formData.append("image", processedImage);
+      const base64Str = await new Promise((resolve) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result);
+        r.onerror = () => resolve("");
+        r.readAsDataURL(processedImage);
+      });
+      if (base64Str) {
+        formData.append("image_base64", base64Str);
+      }
     }
 
     const isNumericId = Number.isInteger(Number(editingPerson.id)) && !isNaN(Number(editingPerson.id));
