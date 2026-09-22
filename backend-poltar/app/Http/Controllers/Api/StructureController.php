@@ -213,12 +213,22 @@ class StructureController extends Controller
                 'name'       => 'required|string|max:255',
                 'position'   => 'required|string|max:255',
                 'generation' => 'required',
-                'image'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096'
             ]);
 
             $imagePath = '';
             if ($request->hasFile('image')) {
-                $imagePath = $this->imageToBase64($request->file('image'));
+                $imageFile = $request->file('image');
+                if (!$imageFile->isValid()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Gagal mengunggah foto. Pastikan ukuran file tidak melebihi batas server.'
+                    ], 422);
+                }
+                $imagePath = $this->imageToBase64($imageFile);
+            } elseif ($request->filled('image_base64')) {
+                $imagePath = $request->input('image_base64');
+            } elseif ($request->filled('image') && is_string($request->input('image')) && str_starts_with($request->input('image'), 'data:image')) {
+                $imagePath = $request->input('image');
             }
 
             $structure = Structure::create([
@@ -259,7 +269,6 @@ class StructureController extends Controller
                 'name'       => 'nullable|string|max:255',
                 'position'   => 'nullable|string|max:255',
                 'generation' => 'nullable',
-                'image'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096'
             ]);
 
             if ($request->has('name') && !empty($request->name)) {
@@ -275,8 +284,19 @@ class StructureController extends Controller
             }
 
             if ($request->hasFile('image')) {
+                $imageFile = $request->file('image');
+                if (!$imageFile->isValid()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Gagal mengunggah foto. Pastikan ukuran file tidak melebihi batas server.'
+                    ], 422);
+                }
                 // Konversi ke base64 data URL (tidak perlu filesystem)
-                $structure->image_path = $this->imageToBase64($request->file('image'));
+                $structure->image_path = $this->imageToBase64($imageFile);
+            } elseif ($request->filled('image_base64')) {
+                $structure->image_path = $request->input('image_base64');
+            } elseif ($request->filled('image') && is_string($request->input('image')) && str_starts_with($request->input('image'), 'data:image')) {
+                $structure->image_path = $request->input('image');
             }
 
             $structure->save();

@@ -133,6 +133,51 @@ export default function AdminPage() {
     }
   };
 
+  const compressImageClientSide = async (file, maxWidth = 500, quality = 0.8) => {
+    if (!file || !(file instanceof File) || !file.type.startsWith("image/")) {
+      return file;
+    }
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                const cleanName = (file.name || "photo.jpg").replace(/\.[^/.]+$/, ".jpg");
+                const compressedFile = new File([blob], cleanName, {
+                  type: "image/jpeg",
+                  lastModified: Date.now(),
+                });
+                resolve(compressedFile);
+              } else {
+                resolve(file);
+              }
+            },
+            "image/jpeg",
+            quality
+          );
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  };
+
   const submitStructure = async (e) => {
     e.preventDefault();
     setSubmittingStruct(true);
@@ -143,7 +188,8 @@ export default function AdminPage() {
     formData.append("position", structPosition);
     formData.append("generation", structGen);
     if (structImage) {
-      formData.append("image", structImage);
+      const processedImage = await compressImageClientSide(structImage);
+      formData.append("image", processedImage);
     }
 
     try {
@@ -199,7 +245,8 @@ export default function AdminPage() {
     formData.append("position", editPosition);
     formData.append("generation", editGen);
     if (editImage) {
-      formData.append("image", editImage);
+      const processedImage = await compressImageClientSide(editImage);
+      formData.append("image", processedImage);
     }
 
     const isNumericId = Number.isInteger(Number(editingPerson.id)) && !isNaN(Number(editingPerson.id));
@@ -737,14 +784,16 @@ export default function AdminPage() {
               </div>
 
               <form onSubmit={submitUpdateStructure} className="space-y-4 text-xs">
-                {/* Current Photo Preview */}
+                {/* Current / New Photo Preview */}
                 <div className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/10">
                   <img
                     src={
-                      editingPerson.image_url ||
-                      (editingPerson.image_path
-                        ? `${getBackendBase()}/storage/${editingPerson.image_path}`
-                        : "/images/placeholder.jpg")
+                      editImage
+                        ? URL.createObjectURL(editImage)
+                        : (editingPerson.image_url ||
+                          (editingPerson.image_path
+                            ? `${getBackendBase()}/storage/${editingPerson.image_path}`
+                            : "/images/placeholder.jpg"))
                     }
                     alt={editingPerson.name}
                     className="w-14 h-14 object-cover rounded-full border-2 border-amber-400/60 shadow"
