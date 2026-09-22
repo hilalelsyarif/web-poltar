@@ -11,6 +11,55 @@ use Throwable;
 class StructureController extends Controller
 {
     /**
+     * Konversi file upload ke base64 data URL (compressed JPEG)
+     * Solusi untuk Railway ephemeral filesystem
+     */
+    private function imageToBase64($file, int $maxWidth = 400, int $quality = 70): string
+    {
+        $mime = $file->getMimeType();
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        // Coba compress dengan GD jika tersedia
+        if (extension_loaded('gd')) {
+            $source = null;
+            if (in_array($extension, ['jpg', 'jpeg'])) {
+                $source = @imagecreatefromjpeg($file->getRealPath());
+            } elseif ($extension === 'png') {
+                $source = @imagecreatefrompng($file->getRealPath());
+            } elseif ($extension === 'webp') {
+                $source = @imagecreatefromwebp($file->getRealPath());
+            }
+
+            if ($source) {
+                $origW = imagesx($source);
+                $origH = imagesy($source);
+
+                // Resize jika terlalu besar
+                if ($origW > $maxWidth) {
+                    $newW = $maxWidth;
+                    $newH = (int) round($origH * ($maxWidth / $origW));
+                    $resized = imagecreatetruecolor($newW, $newH);
+                    imagecopyresampled($resized, $source, 0, 0, 0, 0, $newW, $newH, $origW, $origH);
+                    imagedestroy($source);
+                    $source = $resized;
+                }
+
+                // Output sebagai JPEG compressed
+                ob_start();
+                imagejpeg($source, null, $quality);
+                $data = ob_get_clean();
+                imagedestroy($source);
+
+                return 'data:image/jpeg;base64,' . base64_encode($data);
+            }
+        }
+
+        // Fallback: raw base64 tanpa compression
+        $data = file_get_contents($file->getRealPath());
+        return 'data:' . $mime . ';base64,' . base64_encode($data);
+    }
+
+    /**
      * Auto-seed template pengurus bersih per angkatan
      */
     private function seedDefaultsForGen(string $gen): void
@@ -169,7 +218,7 @@ class StructureController extends Controller
 
             $imagePath = '';
             if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('structures', 'public');
+                $imagePath = $this->imageToBase64($request->file('image'));
             }
 
             $structure = Structure::create([
@@ -226,12 +275,8 @@ class StructureController extends Controller
             }
 
             if ($request->hasFile('image')) {
-                // Hapus foto lama jika ada di storage
-                if ($structure->image_path && Storage::disk('public')->exists($structure->image_path)) {
-                    Storage::disk('public')->delete($structure->image_path);
-                }
-
-                $structure->image_path = $request->file('image')->store('structures', 'public');
+                // Konversi ke base64 data URL (tidak perlu filesystem)
+                $structure->image_path = $this->imageToBase64($request->file('image'));
             }
 
             $structure->save();

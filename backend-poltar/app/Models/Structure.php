@@ -22,6 +22,10 @@ class Structure extends Model
     public function getImageUrlAttribute()
     {
         if (!empty($this->image_path)) {
+            // Base64 data URL — langsung return
+            if (str_starts_with($this->image_path, 'data:')) {
+                return $this->image_path;
+            }
             if (str_starts_with($this->image_path, 'http') || str_starts_with($this->image_path, '/images/')) {
                 return $this->image_path;
             }
