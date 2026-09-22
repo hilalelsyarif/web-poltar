@@ -11,145 +11,6 @@ use Throwable;
 class StructureController extends Controller
 {
     /**
-     * Konversi file upload ke base64 data URL (compressed JPEG)
-     * Solusi untuk Railway ephemeral filesystem
-     */
-    private function imageToBase64($file, int $maxWidth = 400, int $quality = 70): string
-    {
-        $mime = $file->getMimeType();
-        $extension = strtolower($file->getClientOriginalExtension());
-
-        // Coba compress dengan GD jika tersedia
-        if (extension_loaded('gd')) {
-            $source = null;
-            if (in_array($extension, ['jpg', 'jpeg'])) {
-                $source = @imagecreatefromjpeg($file->getRealPath());
-            } elseif ($extension === 'png') {
-                $source = @imagecreatefrompng($file->getRealPath());
-            } elseif ($extension === 'webp') {
-                $source = @imagecreatefromwebp($file->getRealPath());
-            }
-
-            if ($source) {
-                $origW = imagesx($source);
-                $origH = imagesy($source);
-
-                // Resize jika terlalu besar
-                if ($origW > $maxWidth) {
-                    $newW = $maxWidth;
-                    $newH = (int) round($origH * ($maxWidth / $origW));
-                    $resized = imagecreatetruecolor($newW, $newH);
-                    imagecopyresampled($resized, $source, 0, 0, 0, 0, $newW, $newH, $origW, $origH);
-                    imagedestroy($source);
-                    $source = $resized;
-                }
-
-                // Output sebagai JPEG compressed
-                ob_start();
-                imagejpeg($source, null, $quality);
-                $data = ob_get_clean();
-                imagedestroy($source);
-
-                return 'data:image/jpeg;base64,' . base64_encode($data);
-            }
-        }
-
-        // Fallback: raw base64 tanpa compression
-        $data = file_get_contents($file->getRealPath());
-        return 'data:' . $mime . ';base64,' . base64_encode($data);
-    }
-
-    /**
-     * Auto-seed template pengurus per angkatan jika data belum ada
-     */
-    private function seedDefaultsForGen(string $gen): void
-    {
-        $genNum = (int) $gen;
-        $isAkt22 = $genNum === 22;
-        $isAkt18Or19 = $genNum === 18 || $genNum === 19;
-
-        $items = [];
-
-        // Khusus Angkatan 22 (Data Personel Resmi)
-        if ($isAkt22) {
-            $akt22Items = [
-                ['name' => 'Rasya Walisyani', 'position' => 'Wadanki 1'],
-                ['name' => 'M. Bagas Alghifari', 'position' => 'Danki'],
-                ['name' => 'Nurul Hafidz', 'position' => 'Wadanki 2'],
-                ['name' => 'Arifianto Ilham', 'position' => 'Ketua PKT'],
-                ['name' => 'Hilal El Syarif', 'position' => 'PKT'],
-                ['name' => 'Ramadhan Jothi', 'position' => 'PKT'],
-                ['name' => 'Keysha Adinda N', 'position' => 'Sekretaris'],
-                ['name' => 'Masayu Queensha', 'position' => 'Sekretaris'],
-                ['name' => 'Aryabima Suyatna', 'position' => 'Bendahara'],
-                ['name' => 'Djessica Putri', 'position' => 'Bendahara'],
-                ['name' => 'Rendy Arifianto', 'position' => 'TIK'],
-                ['name' => 'Jasmine Malika', 'position' => 'TIK'],
-                ['name' => 'Syafa Annafi', 'position' => 'TIK'],
-                ['name' => 'Abqary Muhammad', 'position' => 'Jasmani'],
-                ['name' => 'Jonathyan Febrian', 'position' => 'Jasmani'],
-                ['name' => 'Dimas Akbar', 'position' => 'Jasmani'],
-                ['name' => 'Babyna Syasyabila', 'position' => 'Humas'],
-                ['name' => 'Kayla Satira', 'position' => 'Humas'],
-            ];
-
-            foreach ($akt22Items as $item) {
-                Structure::create([
-                    'name'       => $item['name'],
-                    'position'   => $item['position'],
-                    'generation' => (string) $gen,
-                    'image_path' => '',
-                ]);
-            }
-            return;
-        }
-
-        // 1. Pimpinan Komando (Akt 18 - 21)
-        $items[] = ['position' => 'Wadanpol 1'];
-        $items[] = ['position' => 'Danpol'];
-        $items[] = ['position' => 'Wadanpol 2'];
-
-        // 2. PKT (1 Ketua + 3 Anggota = 4 slot)
-        $items[] = ['position' => 'Ketua PKT'];
-        $items[] = ['position' => 'PKT'];
-        $items[] = ['position' => 'PKT'];
-        $items[] = ['position' => 'PKT'];
-
-        // 3. Sekretaris & Bendahara
-        $items[] = ['position' => 'Sekretaris'];
-        $items[] = ['position' => 'Bendahara'];
-
-        // 4. Divisi Operasional (TIK 2, Jasmani 2, Humas 2, Linmas 2 jika 18/19)
-        $items[] = ['position' => 'TIK'];
-        $items[] = ['position' => 'TIK'];
-        $items[] = ['position' => 'Jasmani'];
-        $items[] = ['position' => 'Jasmani'];
-        $items[] = ['position' => 'Humas'];
-        $items[] = ['position' => 'Humas'];
-
-        if ($isAkt18Or19) {
-            $items[] = ['position' => 'Linmas'];
-            $items[] = ['position' => 'Linmas'];
-        }
-
-        // 5. Anggota (Khusus Akt 18 & 19 - 3 slot)
-        if ($isAkt18Or19) {
-            $items[] = ['position' => 'Anggota'];
-            $items[] = ['position' => 'Anggota'];
-            $items[] = ['position' => 'Anggota'];
-        }
-
-        foreach ($items as $item) {
-            Structure::create([
-                'name'       => 'Nama Personel',
-                'position'   => $item['position'],
-                'generation' => (string) $gen,
-                'image_path' => '',
-            ]);
-        }
-    }
-
-    /**
      * 1. Dapatkan semua data struktur (Auto-seed jika kosong)
      */
     public function index()
@@ -345,5 +206,144 @@ class StructureController extends Controller
                 'message' => 'Gagal menghapus data: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Auto-seed template pengurus per angkatan jika data belum ada
+     */
+    private function seedDefaultsForGen(string $gen): void
+    {
+        $genNum = (int) $gen;
+        $isAkt22 = $genNum === 22;
+        $isAkt18Or19 = $genNum === 18 || $genNum === 19;
+
+        $items = [];
+
+        // Khusus Angkatan 22 (Data Personel Resmi)
+        if ($isAkt22) {
+            $akt22Items = [
+                ['name' => 'Rasya Walisyani', 'position' => 'Wadanki 1'],
+                ['name' => 'M. Bagas Alghifari', 'position' => 'Danki'],
+                ['name' => 'Nurul Hafidz', 'position' => 'Wadanki 2'],
+                ['name' => 'Arifianto Ilham', 'position' => 'Ketua PKT'],
+                ['name' => 'Hilal El Syarif', 'position' => 'PKT'],
+                ['name' => 'Ramadhan Jothi', 'position' => 'PKT'],
+                ['name' => 'Keysha Adinda N', 'position' => 'Sekretaris'],
+                ['name' => 'Masayu Queensha', 'position' => 'Sekretaris'],
+                ['name' => 'Aryabima Suyatna', 'position' => 'Bendahara'],
+                ['name' => 'Djessica Putri', 'position' => 'Bendahara'],
+                ['name' => 'Rendy Arifianto', 'position' => 'TIK'],
+                ['name' => 'Jasmine Malika', 'position' => 'TIK'],
+                ['name' => 'Syafa Annafi', 'position' => 'TIK'],
+                ['name' => 'Abqary Muhammad', 'position' => 'Jasmani'],
+                ['name' => 'Jonathyan Febrian', 'position' => 'Jasmani'],
+                ['name' => 'Dimas Akbar', 'position' => 'Jasmani'],
+                ['name' => 'Babyna Syasyabila', 'position' => 'Humas'],
+                ['name' => 'Kayla Satira', 'position' => 'Humas'],
+            ];
+
+            foreach ($akt22Items as $item) {
+                Structure::create([
+                    'name'       => $item['name'],
+                    'position'   => $item['position'],
+                    'generation' => (string) $gen,
+                    'image_path' => '',
+                ]);
+            }
+            return;
+        }
+
+        // 1. Pimpinan Komando (Akt 18 - 21)
+        $items[] = ['position' => 'Wadanpol 1'];
+        $items[] = ['position' => 'Danpol'];
+        $items[] = ['position' => 'Wadanpol 2'];
+
+        // 2. PKT (1 Ketua + 3 Anggota = 4 slot)
+        $items[] = ['position' => 'Ketua PKT'];
+        $items[] = ['position' => 'PKT'];
+        $items[] = ['position' => 'PKT'];
+        $items[] = ['position' => 'PKT'];
+
+        // 3. Sekretaris & Bendahara
+        $items[] = ['position' => 'Sekretaris'];
+        $items[] = ['position' => 'Bendahara'];
+
+        // 4. Divisi Operasional (TIK 2, Jasmani 2, Humas 2, Linmas 2 jika 18/19)
+        $items[] = ['position' => 'TIK'];
+        $items[] = ['position' => 'TIK'];
+        $items[] = ['position' => 'Jasmani'];
+        $items[] = ['position' => 'Jasmani'];
+        $items[] = ['position' => 'Humas'];
+        $items[] = ['position' => 'Humas'];
+
+        if ($isAkt18Or19) {
+            $items[] = ['position' => 'Linmas'];
+            $items[] = ['position' => 'Linmas'];
+        }
+
+        // 5. Anggota (Khusus Akt 18 & 19 - 3 slot)
+        if ($isAkt18Or19) {
+            $items[] = ['position' => 'Anggota'];
+            $items[] = ['position' => 'Anggota'];
+            $items[] = ['position' => 'Anggota'];
+        }
+
+        foreach ($items as $item) {
+            Structure::create([
+                'name'       => 'Nama Personel',
+                'position'   => $item['position'],
+                'generation' => (string) $gen,
+                'image_path' => '',
+            ]);
+        }
+    }
+
+    /**
+     * Konversi file upload ke base64 data URL (compressed JPEG)
+     * Solusi untuk Railway ephemeral filesystem
+     */
+    private function imageToBase64($file, int $maxWidth = 400, int $quality = 70): string
+    {
+        $mime = $file->getMimeType();
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        // Coba compress dengan GD jika tersedia
+        if (extension_loaded('gd')) {
+            $source = null;
+            if (in_array($extension, ['jpg', 'jpeg'])) {
+                $source = @imagecreatefromjpeg($file->getRealPath());
+            } elseif ($extension === 'png') {
+                $source = @imagecreatefrompng($file->getRealPath());
+            } elseif ($extension === 'webp') {
+                $source = @imagecreatefromwebp($file->getRealPath());
+            }
+
+            if ($source) {
+                $origW = imagesx($source);
+                $origH = imagesy($source);
+
+                // Resize jika terlalu besar
+                if ($origW > $maxWidth) {
+                    $newW = $maxWidth;
+                    $newH = (int) round($origH * ($maxWidth / $origW));
+                    $resized = imagecreatetruecolor($newW, $newH);
+                    imagecopyresampled($resized, $source, 0, 0, 0, 0, $newW, $newH, $origW, $origH);
+                    imagedestroy($source);
+                    $source = $resized;
+                }
+
+                // Output sebagai JPEG compressed
+                ob_start();
+                imagejpeg($source, null, $quality);
+                $data = ob_get_clean();
+                imagedestroy($source);
+
+                return 'data:image/jpeg;base64,' . base64_encode($data);
+            }
+        }
+
+        // Fallback: raw base64 tanpa compression
+        $data = file_get_contents($file->getRealPath());
+        return 'data:' . $mime . ';base64,' . base64_encode($data);
     }
 }
